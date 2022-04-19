@@ -14,9 +14,9 @@
 
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 {
-	unsigned int i;
-	unsigned int dest_l;
-	unsigned int src_l;
+	unsigned int	i;
+	unsigned int	dest_l;
+	unsigned int	src_l;
 
 	if (dstsize == 0)
 		return (ft_strlen(src));
@@ -32,7 +32,7 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 		dst[i + dest_l] = src[i];
 		i++;
 	}
-	if (dstsize != 0 && dstsize >= dest_l)
+	if (dstsize >= dest_l)
 		dst[i + dest_l] = '\0';
 	return (src_l);
 }

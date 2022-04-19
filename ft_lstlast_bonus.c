@@ -1,22 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_lstlast_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgiron <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: jgiron <jgiron@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/06 11:08:14 by jgiron            #+#    #+#             */
-/*   Updated: 2019/11/22 19:16:24 by jgiron           ###   ########.fr       */
+/*   Created: 2022/04/19 06:07:19 by jgiron            #+#    #+#             */
+/*   Updated: 2022/04/19 06:07:24 by jgiron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+t_list	*ft_lstlast(t_list *lst)
 {
-	if (!s)
-		return (NULL);
-	if (start >= ft_strlen(s))
-		return (ft_strdup(""));
-	return (ft_strndup(s + start, len));
+	while (lst && lst->next)
+		lst = lst->next;
+	return (lst);
 }

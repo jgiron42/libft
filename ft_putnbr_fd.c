@@ -12,48 +12,28 @@
 
 #include "libft.h"
 
-static void	ft_putnbr_display(int t, int n[], int m, int fd)
+void	ft_putnbr_fd(int n, int fd)
 {
-	while (t > 0 && m == 0)
-	{
-		write(fd, &n[t], 1);
-		t--;
-	}
-	if (m == 1)
-	{
-		write(fd, &"-2147483648", 11);
-	}
-}
+	char		nb[12];
+	long int	ln;
+	int			i;
 
-static void	ft_putnbr_process(int n[], int nb, int m, int fd)
-{
-	int	t;
-
-	t = 1;
-	while (nb >= 10 && m == 0)
+	if (!n)
+		return (ft_putstr_fd("0", fd));
+	ln = n;
+	if (ln < 0)
 	{
-		n[t] = (nb % 10) + 48;
-		t++;
-		nb = nb / 10;
+		write(fd, "-", 1);
+		ln = -ln;
 	}
-	n[t] = nb + 48;
-	ft_putnbr_display(t, n, m, fd);
-}
-
-void		ft_putnbr_fd(int n, int fd)
-{
-	int s;
-	int nb[11];
-	int m;
-
-	m = 0;
-	s = 1;
-	if (n == -2147483648)
-		m = 1;
-	if (n < 0 && m == 0)
+	nb[11] = 0;
+	i = 10;
+	while (ln)
 	{
-		write(fd, &"-", 1);
-		n = -n;
+		nb[i] = ln % 10 + '0';
+		ln /= 10;
+		i--;
 	}
-	ft_putnbr_process(nb, n, m, fd);
+	i++;
+	write(fd, nb + i, 12 - i - 1);
 }

@@ -1,22 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_lstnew_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgiron <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: jgiron <jgiron@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/06 11:08:14 by jgiron            #+#    #+#             */
-/*   Updated: 2019/11/22 19:16:24 by jgiron           ###   ########.fr       */
+/*   Created: 2022/04/19 06:08:04 by jgiron            #+#    #+#             */
+/*   Updated: 2022/04/19 06:08:15 by jgiron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+t_list	*ft_lstnew(void *content)
 {
-	if (!s)
+	t_list	*ret;
+
+	ret = malloc(sizeof(t_list));
+	if (!ret)
 		return (NULL);
-	if (start >= ft_strlen(s))
-		return (ft_strdup(""));
-	return (ft_strndup(s + start, len));
+	*ret = (t_list){content, NULL};
+	return (ret);
 }

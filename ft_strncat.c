@@ -1,34 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   ft_strncat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jgiron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/04 16:27:39 by jgiron            #+#    #+#             */
-/*   Updated: 2022/04/19 06:22:28 by jgiron           ###   ########.fr       */
+/*   Created: 2019/08/17 12:35:15 by jgiron            #+#    #+#             */
+/*   Updated: 2019/11/28 16:20:46 by jgiron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memcpy(void *dst, const void *src, size_t n)
+char	*ft_strncat(char *dst, const char *src, size_t n)
 {
-	size_t	i;
-
-	if (!dst && !src)
-		return (NULL);
-	i = 0;
-	while (i < n / sizeof(long int))
-	{
-		((long int *)dst)[i] = ((long int *)src)[i];
-		i++;
-	}
-	i *= sizeof(long int);
-	while (i < n)
-	{
-		((char *)dst)[i] = ((char *)src)[i];
-		i++;
-	}
+	ft_strncpy(dst + ft_strlen(dst), src, n);
+	if (ft_strlen(src) > n)
+		dst[ft_strlen(dst) + n + 1] = 0;
 	return (dst);
 }

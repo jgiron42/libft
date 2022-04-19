@@ -20,7 +20,8 @@ char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 	if (!s || !f)
 		return (NULL);
 	i = -1;
-	if (!(dst = ft_strdup(s)))
+	dst = ft_strdup(s);
+	if (!dst)
 		return (NULL);
 	while (dst[++i])
 		dst[i] = (*f)(i, dst[i]);

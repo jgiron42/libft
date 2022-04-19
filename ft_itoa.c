@@ -16,7 +16,7 @@ static size_t	ft_nbrlen(int n)
 {
 	int	len;
 
-	len = n < 0 ? 2 : 1;
+	len = 1 + (n < 0);
 	while (!(n > -10 && n < 10))
 	{
 		n /= 10;
@@ -25,30 +25,30 @@ static size_t	ft_nbrlen(int n)
 	return (len);
 }
 
-char			*ft_itoa(int n)
+char	*ft_itoa(int n)
 {
-	char			*result;
-	size_t			i;
+	unsigned char	*result;
 	size_t			len;
 	long long int	nbr;
 
 	nbr = (long long int)n;
+	if (!n)
+		return (ft_strdup("0"));
 	len = ft_nbrlen(n);
-	i = 1;
-	if (!(result = malloc(len + 1)))
+	result = malloc(len + 1);
+	if (!result)
 		return (NULL);
-	result[len] = 0;
 	if (nbr < 0)
 	{
 		nbr = -nbr;
-		result[0] = 45;
+		result[0] = '-';
 	}
-	if (nbr <= -10 || nbr >= 10)
-		result[len - i++] = 48 + nbr % 10;
-	else
-		nbr *= 10;
-	while ((nbr /= 10) >= 10)
-		result[len - i++] = 48 + nbr % 10;
-	result[len - i++] = 48 + nbr % 10;
-	return (result);
+	result[len] = 0;
+	while (nbr)
+	{
+		--len;
+		result[len] = '0' + nbr % 10;
+		nbr /= 10;
+	}
+	return ((char *)result);
 }

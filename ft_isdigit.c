@@ -11,10 +11,10 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <string.h>
+#include <ctype.h>
 
 int	ft_isdigit(int c)
 {
-	if ((c >= 48) && (c <= 57))
-		return (1);
-	return (0);
+	return (c >= '0' && c <= '9');
 }

@@ -26,7 +26,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	j = 0;
 	while (s2[j])
 		j++;
-	if (!(dst = malloc(i + j + 1)))
+	dst = malloc(i + j + 1);
+	if (!dst)
 		return (NULL);
 	dst[i + j] = 0;
 	while (--j + 1 > 0)
