@@ -30,7 +30,7 @@ int ft_getopt(int argc, char * const argv[], const char *optstring)
 				if (argv[ft_optind][1] == '-') // end of options
 					return (-1);
 				else if (argv[ft_optind][1] == '\0') // no option
-					continue;
+					next_word();
 				else // parse next character
 					ft_optwordind++;
 			}
@@ -93,6 +93,7 @@ int ft_getopt(int argc, char * const argv[], const char *optstring)
 						ft_putstr_fd("'\n", 2);
 					}
 					next_word();
+					ft_optopt = current;
 					return (colon_enabled ? ':' : '?');
 				}
 			}
