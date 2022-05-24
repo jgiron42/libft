@@ -12,6 +12,8 @@
 
 
 SRCS    =	ft_atoi.c	\
+		ft_posixly_correct.c \
+		ft_getopt.c \
 		ft_bzero.c	\
 		ft_calloc.c	\
 		ft_isalnum.c	\

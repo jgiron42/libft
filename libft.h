@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <limits.h>
 # include <stdint.h>
+# include <stdbool.h>
 
 typedef struct s_list
 {
@@ -25,6 +26,12 @@ typedef struct s_list
 	struct s_list	*next;
 }		t_list;
 
+extern char *ft_optarg;
+extern int ft_optind, ft_opterr, ft_optopt;
+extern char **environ;
+
+bool	ft_posixly_correct();
+int		ft_getopt(int argc, char * const argv[], const char *optstring);
 void	*ft_memset(void *b, int c, size_t len);
 void	ft_bzero(void *s, size_t n);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
