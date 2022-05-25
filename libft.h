@@ -19,7 +19,8 @@
 # include <limits.h>
 # include <stdint.h>
 # include <stdbool.h>
-
+# include <errno.h>
+#include <error.h>
 typedef struct s_list
 {
 	void			*content;
@@ -45,6 +46,7 @@ int		ft_isdigit(int c);
 int		ft_isalnum(int c);
 int		ft_isascii(int c);
 int		ft_isprint(int c);
+int		ft_isspace(int c);
 int		ft_toupper(int c);
 int		ft_tolower(int c);
 char	*ft_strchr(const char *s, int c);
