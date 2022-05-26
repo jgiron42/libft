@@ -20,7 +20,11 @@
 # include <stdint.h>
 # include <stdbool.h>
 # include <errno.h>
-#include <error.h>
+# include <error.h>
+# include <sys/time.h>
+# include <math.h>
+# include <float.h>
+
 typedef struct s_list
 {
 	void			*content;
@@ -31,6 +35,23 @@ extern char *ft_optarg;
 extern int ft_optind, ft_opterr, ft_optopt;
 extern char **environ;
 
+char	*ft_strtok(char *str, const char *delim);
+size_t	ft_strcspn(const char *s, const char *reject);
+size_t	ft_strspn(const char *s, const char *accept);
+char *ft_strpbrk(const char *s, const char *accept);
+int ft_abs(int j);
+long ft_labs(long j);
+long long ft_llabs(long long j);
+char	*ft_getenv(const char *name);
+double	ft_atof(const char *nptr);
+double	ft_strtod(const char *nptr, char **endptr);
+float	ft_strtof(const char *nptr, char **endptr);
+long double	ft_strtold(const char *nptr, char **endptr);
+long	ft_strtol(const char *nptr, char **endptr, int base);
+long long	ft_strtoll(const char *nptr, char **endptr, int base);
+long	ft_atol(const char *nptr);
+long long	ft_atoll(const char *nptr);
+time_t	ft_time(time_t *tloc);
 bool	ft_posixly_correct();
 int		ft_getopt(int argc, char * const argv[], const char *optstring);
 void	*ft_memset(void *b, int c, size_t len);
@@ -53,6 +74,8 @@ char	*ft_strchr(const char *s, int c);
 char	*ft_strrchr(const char *s, int c);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_strcasecmp(const char *s1, const char *s2);
+int		ft_strncasecmp(const char *s1, const char *s2, size_t n);
 char	*ft_strcpy(char *dst, const char *src);
 char	*ft_strncpy(char *dst, const char *src, size_t n);
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);

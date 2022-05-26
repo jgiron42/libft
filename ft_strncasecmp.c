@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_strncasecmp.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jgiron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/14 16:32:04 by jgiron            #+#    #+#             */
-/*   Updated: 2019/11/28 14:07:33 by jgiron           ###   ########.fr       */
+/*   Created: 2019/08/06 15:37:10 by jgiron            #+#    #+#             */
+/*   Updated: 2022/04/19 06:43:25 by jgiron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-/**
- * POSIX and glibc compliant atoi (see: man 3 atoi)
- */
-int	ft_atoi(const char *nptr)
+int	ft_strncasecmp(const char *s1, const char *s2, size_t n)
 {
-	int errno_save = errno;
-	errno = 0;
-	long int ret = ft_strtol(nptr, NULL, 10);
-	if (ret < INT_MIN || ret > INT_MAX || errno)
-		ret = 0;
-	errno = errno_save;
-	return ((int)ret);
+	while ((*s1 != '\0' || *s2 != '\0') && n > 0)
+	{
+		if (ft_tolower(*s1) != ft_tolower(*s2))
+			return ((int)(ft_tolower(*s1) - ft_tolower(*s2)));
+		s1++;
+		s2++;
+		n--;
+	}
+	return (0);
 }

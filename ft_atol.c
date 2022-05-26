@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_atol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jgiron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,15 +13,15 @@
 #include "libft.h"
 
 /**
- * POSIX and glibc compliant atoi (see: man 3 atoi)
+ * POSIX and glibc compliant atol (see: man 3 atol)
  */
-int	ft_atoi(const char *nptr)
+long	ft_atol(const char *nptr)
 {
 	int errno_save = errno;
 	errno = 0;
 	long int ret = ft_strtol(nptr, NULL, 10);
-	if (ret < INT_MIN || ret > INT_MAX || errno)
+	if (errno)
 		ret = 0;
 	errno = errno_save;
-	return ((int)ret);
+	return (ret);
 }
