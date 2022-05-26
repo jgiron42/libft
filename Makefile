@@ -11,7 +11,23 @@
 # **************************************************************************** #
 
 
-SRCS    =	ft_atoi.c	\
+SRCS    =	ft_atoi.c \
+		ft_strspn.c \
+		ft_strcspn.c \
+		ft_strtok.c \
+		ft_strpbrk.c \
+		ft_abs.c \
+		ft_labs.c \
+		ft_llabs.c \
+		ft_getenv.c \
+		ft_atof.c \
+		ft_atol.c \
+		ft_atoll.c \
+		ft_strtol.c \
+		ft_strtoll.c \
+		ft_strtod.c \
+		ft_strtof.c \
+		ft_strtold.c \
 		ft_posixly_correct.c \
 		ft_getopt.c \
 		ft_bzero.c	\
@@ -45,13 +61,15 @@ SRCS    =	ft_atoi.c	\
 		ft_strmapi.c	\
 		ft_strncmp.c	\
 		ft_strnstr.c	\
+		ft_strncasecmp.c	\
+		ft_strcasecmp.c	\
 		ft_strrchr.c	\
 		ft_strtrim.c	\
 		ft_substr.c	\
 		ft_tolower.c	\
 		ft_striteri.c	\
-		ft_toupper.c
-BONUS	=	ft_lstadd_front_bonus.c	\
+		ft_toupper.c \
+		ft_lstadd_front_bonus.c	\
 		ft_lstadd_back_bonus.c	\
 		ft_lstclear_bonus.c	\
 		ft_lstdelone_bonus.c	\
@@ -61,8 +79,7 @@ BONUS	=	ft_lstadd_front_bonus.c	\
 		ft_lstnew_bonus.c	\
 		ft_lstsize_bonus.c	\
 
-OBJS    =	$(SRCS:.c=.o)
-OBJS_BONUS =	$(BONUS:.c=.o)
+OBJS    =	$(SRCS:.c=.o)\
 
 HEADER	=	libft.h
 
@@ -74,10 +91,6 @@ all	:	$(NAME)
 
 $(NAME)	:	$(OBJS) $(HEADER)
 		ar rc $(NAME) $(OBJS)
-		ranlib $(NAME)
-		
-bonus	:	$(OBJS_BONUS) $(OBJS) $(HEADER)
-		ar rc $(NAME) $(OBJS) $(OBJS_BONUS)
 		ranlib $(NAME)
 
 so:
