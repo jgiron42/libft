@@ -77,3 +77,127 @@ Y strstr
 N strtok
 N strxfrm
 
+## unistd
+
+N access
+N alarm
+N chdir Change the current working directory.
+N chown Change the ownership of a file.
+N close Close a file (see low level functions)
+N chroot Change the root directory I am not 100% sure this is supposed to be in unistd.
+N ctermid
+N cuserid
+N dup duplicate a file descriptor
+N dup2 duplicate a file descriptor
+N execl
+N execle
+N execlp
+N execv
+N execve
+N execvp
+N fchdir Change the current working directory.I am not 100% sure this is supposed to be in unistd.
+N fork Create a child process.
+N fpathconf Change the current working directory.I am not 100% sure this is supposed to be in unistd.
+N getegid Get the group ID of the process.
+N geteuid Get the User ID of the process.
+N gethostname Name of the host (see uname). Not 100% sure this is in unistd
+Y getopt
+N getgid Get a group ID.
+N getgroups
+N getlogin
+N getpgrp
+N getpid get process ID.
+N getppid, get parent process ID.
+N getuid Get the User ID of the process.
+N isatty
+N link
+N lseek
+N mkdir Make a directory
+N open Open a file
+N pathconf
+N pause Put the program to sleep.
+N pipe
+N read Read a file descriptor.
+N rename Rename a file. This function can also be found in the ANSI stdio library. MAN PAGE.
+N rmdir Remove a directory
+N setgid Set the Group ID of the process.
+N setpgid
+N setsid
+N setuid Set the User ID of the process.
+N sleep Pause for a required number of seconds.
+N sysconf
+N tcgetpgrp
+N tcsetpgrp
+N ttyname
+N unlink Remove a file
+N write Write to a file descriptor.
+
+## stdio
+
+Y clearerr
+Y fclose
+Y feof
+Y ferror
+Y fflush
+Y fgetc
+Y fgetpos
+Y fgets
+Y fopen
+N fprintf
+Y fputc
+Y fputs
+Y fread
+N freopen
+N fscanf
+Y fseek
+Y fsetpos
+Y ftell
+Y fwrite
+Y getc
+Y getchar
+Y gets
+Y perror
+N printf
+Y putc
+Y putchar
+Y puts
+Y remove
+Y rename
+Y rewind
+N scanf
+Y setbuf
+Y setvbuf
+N snprintf
+N sprintf
+N sscanf
+N tmpfile
+N tmpnam
+Y ungetc
+N vfprintf
+N vfscanf
+N vprintf
+N vscanf
+N vsnprintf
+N vsprintf
+N vsscanf
+
+CX:
+N ctermid
+N fdopen
+Y fileno
+N fseeko
+N ftello
+N pclose
+N popen
+
+XSI:
+N tempnam
+
+TSF:
+N flockfile
+N ftrylockfile
+N funlockfile
+N getc_unlocked
+N getchar_unlocked
+N putc_unlocked
+N putchar_unlocked
