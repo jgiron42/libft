@@ -1,4 +1,4 @@
-#include "ft_stdio.h"
+#include "internal_ft_stdio.h"
 
 int ft_fclose(ft_FILE *stream)
 {

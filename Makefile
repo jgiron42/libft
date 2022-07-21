@@ -51,6 +51,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		other/ft_putstr_fd.c	\
 		other/ft_split.c	\
 		string/ft_strchr.c	\
+		string/ft_strcpy.c	\
 		string/ft_strdup.c	\
 		string/ft_strndup.c	\
 		other/ft_strjoin.c	\
@@ -136,7 +137,7 @@ HEADER	=	libft.h
 
 NAME    =	libft.a
 
-CFLAGS  +=	-Wall -Werror -Wextra -g3
+CFLAGS  +=	-Wall -Werror -Wextra -g3 -D ENABLE_STRERROR
 
 all	:	$(NAME)
 

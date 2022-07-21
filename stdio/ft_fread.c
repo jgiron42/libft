@@ -1,4 +1,4 @@
-#include "ft_stdio.h"
+#include "internal_ft_stdio.h"
 
 size_t	ft_fread(void *ptr, size_t size, size_t nmemb, ft_FILE *stream)
 {

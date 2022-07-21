@@ -1,13 +1,15 @@
 #ifndef LIBFT_FT_STDIO_H
-#define LIBFT_FT_STDIO_H
-#include "../libft.h"
-#include <fcntl.h>
-#include <string.h>
-#define ft_EOF EOF
-#define BUF_REALLOC 10
-#define ft_stdin ((ft_FILE *)&stdio_files[0])
-#define ft_stdout ((ft_FILE *)&stdio_files[1])
-#define ft_stderr ((ft_FILE *)&stdio_files[2])
+# define LIBFT_FT_STDIO_H
+# include <fcntl.h>
+# include <string.h>
+# include <stdbool.h>
+# include <unistd.h>
+# include <stdlib.h>
+# define ft_EOF EOF
+# define BUF_REALLOC 10
+# define ft_stdin ((ft_FILE *)&stdio_files[0])
+# define ft_stdout ((ft_FILE *)&stdio_files[1])
+# define ft_stderr ((ft_FILE *)&stdio_files[2])
 
 enum	ft_stdio_flags {
 	FT_STDIO_R = 1,
@@ -88,4 +90,4 @@ ssize_t  ft_getline(char **restrict lineptr, size_t *restrict n, ft_FILE *restri
 
 int		ft_setvbuf(ft_FILE *restrict stream, char *restrict buf, int type, size_t size);
 void	ft_setbuf(ft_FILE *restrict stream, char *restrict buf);
-#endif //LIBFT_FT_STDIO_H
+#endif

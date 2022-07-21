@@ -1,4 +1,4 @@
-#include "ft_stdio.h"
+#include "internal_ft_stdio.h"
 
 void	ft_perror(const char *prefix)
 {
