@@ -2,6 +2,7 @@
 
 int	handle_m(internal_printf *conv, va_list arg)
 {
+	(void)arg;
 #ifdef ENABLE_STRERROR
 	char *str = strerror(errno);
 	size_t len = ft_strlen(str);
@@ -11,6 +12,8 @@ int	handle_m(internal_printf *conv, va_list arg)
 		return -1;
 	if (pad_right(conv, len) == -1)
 		return -1;
+#else
+	(void)conv;
 #endif
 	return (0);
 }

@@ -1,13 +1,9 @@
-//
-// Created by joachim on 6/26/22.
-//
-
 #ifndef LIBFT_INTERNAL_PRINTF_H
-#define LIBFT_INTERNAL_PRINTF_H
-#include "printf.h"
-#include "../internal_ft_stdio.h"
-#include <stdarg.h>
-#include <stddef.h>
+# define LIBFT_INTERNAL_PRINTF_H
+# include "printf.h"
+# include "../internal_ft_stdio.h"
+# include <stdarg.h>
+# include <stddef.h>
 
 static const char *ft_printf_flag_char = "#0- +'";
 

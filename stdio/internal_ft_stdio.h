@@ -1,6 +1,7 @@
 #ifndef LIBFT_INTERNAL_FT_STDIO_H
 #define LIBFT_INTERNAL_FT_STDIO_H
 #include "ft_stdio.h"
+#include "../libft.h"
 #ifndef FT_STDIO_GETDELIM_BUFFER_SIZE
 # define FT_STDIO_GETDELIM_BUFFER_SIZE 10
 #endif
