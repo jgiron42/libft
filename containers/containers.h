@@ -4,12 +4,6 @@
 #include "../libft.h"
 
 typedef enum {
-	OK,
-	KO,
-	FATAL,
-}		status;
-
-typedef enum {
 	FT_VECTOR,
 	FT_BTREE,
 	FT_LIST
