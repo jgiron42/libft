@@ -26,6 +26,12 @@
 # include <float.h>
 # include "stdio/printf/printf.h"
 
+typedef enum {
+	OK,
+	KO,
+	FATAL,
+}		status;
+
 typedef struct s_list
 {
 	void			*content;
