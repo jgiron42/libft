@@ -38,7 +38,8 @@ typedef struct	s_FILE
 	size_t				rbuflen;
 	size_t				rbufcap;
 	char				*wbuf;
-	ssize_t				wbuflen;
+	size_t				wbuflen;
+	size_t				wbufcap;
 	char				buf_flag;
 	bool				free_wbuf;
 	struct s_FILE		*prev;
