@@ -9,6 +9,7 @@ status ft_vector_default(type_metadata metadata, void *dst)
 		.vector = {
 				.data = NULL,
 				.capacity = 0,
+				.align = sizeof(data_type),
 		}
 	};
 	return OK;
@@ -23,6 +24,7 @@ status ft_vector(type_metadata meta, void *dst)
 		.vector = {
 				.data = NULL,
 				.capacity = 0,
+				.align = sizeof(data_type),
 		}
 	};
 	return OK;
@@ -32,10 +34,10 @@ status ft_vector_copy(struct s_type_metadata meta, void *dst, const void *src)
 {
 	(void)meta;
 	*(container *)dst = *(container *)src;
-	(*(container *)dst).vector.data = malloc(((container *)dst)->size * sizeof(data_type));
+	(*(container *)dst).vector.data = malloc(((container *)dst)->size * (*(container *)src).vector.align);
 	if (!(*(container *)dst).vector.data)
 		return FATAL;
-	memcpy((*(container *)dst).vector.data, (*(container *)src).vector.data, (*(container *)dst).size * sizeof(data_type));
+	memcpy((*(container *)dst).vector.data, (*(container *)src).vector.data, (*(container *)dst).size * (*(container *)src).vector.align);
 	return OK;
 }
 
@@ -44,7 +46,7 @@ void	ft_vector_clear(container *this)
 	if (this->size)
 	{
 		for (size_t i = 0; i < this->size; i++)
-			this->value_type_metadata.destructor(this->value_type_metadata, this->vector.data + i);
+			this->value_type_metadata.destructor(this->value_type_metadata, this->vector.data + i * this->vector.align);
 		this->size = 0;
 	}
 }
@@ -66,6 +68,7 @@ iterator ft_vector_begin(container *this)
 		.metadata = FT_VECTOR_ITERATOR,
 		.vector = {
 				.current = this->vector.data,
+				.align = this->vector.align,
 		},
 	};
 }
@@ -77,7 +80,8 @@ iterator ft_vector_end(container *this)
 		.value_type_metadata = this->value_type_metadata,
 		.metadata = FT_VECTOR_ITERATOR,
 		.vector = {
-				.current = this->vector.data + this->size,
+				.current = this->vector.data + this->size * this->vector.align,
+				.align = this->vector.align,
 		},
 	};
 }
@@ -91,13 +95,13 @@ status	ft_vector_expand(container *dst, size_t count_more)
 	else
 		new_cap = dst->vector.capacity + count_more;
 
-	data_type *new_ptr = malloc(new_cap * sizeof(data_type));
+	char *new_ptr = malloc(new_cap * dst->vector.align);
 	if (!new_ptr)
 		return (FATAL);
 	for (size_t i = 0; i < dst->size; i++)
 	{
 		int ret;
-		if ((ret = dst->value_type_metadata.copy(dst->value_type_metadata, new_ptr + i, dst->vector.data + i)) != OK)
+		if ((ret = dst->value_type_metadata.copy(dst->value_type_metadata, new_ptr + i * dst->vector.align, dst->vector.data + i * dst->vector.align)) != OK)
 		{
 			free(new_ptr);
 			return ret;
@@ -114,8 +118,8 @@ status	ft_vector_insert_val(container *this, iterator pos, data_type val)
 	size_t offset = pos.vector.current - this->vector.data;
 	if (this->vector.capacity < 1 + this->size && ft_vector_expand(this, 1) == FATAL)
 		return FATAL;
-	if (this->size > offset)
-		ft_memmove(this->vector.data + offset + 1, this->vector.data + offset, (this->size - offset) * sizeof(data_type));
+	if (this->size * this->vector.align > offset)
+		ft_memmove(this->vector.data + offset + this->vector.align, this->vector.data + offset, (this->size - offset) * this->vector.align);
 	this->size++;
 	return this->value_type_metadata.copy(this->value_type_metadata, this->vector.data + offset, &val);
 }
@@ -123,7 +127,7 @@ status	ft_vector_insert_val(container *this, iterator pos, data_type val)
 status	ft_vector_insert_range(container *this, iterator pos, iterator begin, iterator end)
 {
 	status ret;
-	size_t offset = pos.vector.current - this->vector.data;
+	size_t offset = (pos.vector.current - this->vector.data) / this->vector.align;
 	if (begin.iterator_tag < FT_FORWARD_ITERATOR) // no multipass :(
 	{
 		while (begin.metadata.compare(begin.metadata ,&begin, &end))
@@ -131,7 +135,7 @@ status	ft_vector_insert_range(container *this, iterator pos, iterator begin, ite
 			data_type tmp;
 			if ((ret = begin.value_type_metadata.copy(begin.value_type_metadata, &tmp, begin.metadata.dereference(&begin))) != OK)
 				return ret;
-			pos.vector.current = this->vector.data + offset;
+			pos.vector.current = this->vector.data + offset * this->vector.align;
 			if ((ret = ft_vector_insert_val(this, pos, tmp)) != OK)
 				return ret;
 			offset--;
@@ -144,11 +148,11 @@ status	ft_vector_insert_range(container *this, iterator pos, iterator begin, ite
 		size_t total = distance(begin, end);
 		if (this->vector.capacity - this->size < total && ft_vector_expand(this, total) != OK)
 			return FATAL;
-		ft_memmove((this->vector.data + offset + total), this->vector.data + offset, (this->size - offset) * sizeof(data_type));
+		ft_memmove((this->vector.data + (offset + total) * this->vector.align), this->vector.data + offset * this->vector.align, (this->size - offset) * this->vector.align);
 		for (size_t i = 0; i < total; i++, begin.metadata.increment(&begin))
 		{
 			void *value = begin.metadata.dereference(&begin);
-			if ((ret = begin.value_type_metadata.copy(begin.value_type_metadata, this->vector.data + offset + i, &value)) != OK)
+			if ((ret = begin.value_type_metadata.copy(begin.value_type_metadata, this->vector.data + (offset + i) * this->vector.align, &value)) != OK)
 				return ret;
 		}
 		this->size += total;
@@ -158,22 +162,22 @@ status	ft_vector_insert_range(container *this, iterator pos, iterator begin, ite
 
 iterator	ft_vector_erase_range(container *this, iterator begin, iterator end)
 {
-	data_type *tmp = begin.vector.current;
+	char *tmp = begin.vector.current;
 	while (tmp != end.vector.current)
 	{
 		this->value_type_metadata.destructor(this->value_type_metadata, tmp);
-		tmp++;
+		tmp += this->vector.align;
 	}
-	if (this->vector.data + this->size - end.vector.current > 0)
-		ft_memmove(begin.vector.current, end.vector.current, (this->vector.data + this->size - end.vector.current) * sizeof(data_type));
-	this->size -= end.vector.current - begin.vector.current;
+	if (this->vector.data + this->size * this->vector.align - end.vector.current > 0)
+		ft_memmove(begin.vector.current, end.vector.current, (this->vector.data + this->size * this->vector.align - end.vector.current));
+	this->size -= (end.vector.current - begin.vector.current) / this->vector.align;
 	return end;
 }
 
 iterator	ft_vector_erase_one(container *this, iterator it)
 {
 	iterator it2 = it;
-	it2.vector.current++;
+	it2.vector.current += this->vector.align;
 	return ft_vector_erase_range(this, it, it2);
 }
 
@@ -191,7 +195,7 @@ status ft_vector_push_front(container *this, data_type data)
 void ft_vector_pop_back(container *this)
 {
 	iterator it = ft_vector_end(this);
-	it.vector.current--;
+	it.vector.current -= this->vector.align;
 	ft_vector_erase_one(this, it);
 }
 
@@ -212,28 +216,28 @@ int	ft_vector_iterator_compare(type_metadata prop, void *l, void *r)
 
 data_type ft_vector_iterator_dereference(void *it)
 {
-	return *(((iterator *)it)->vector.current);
+	return *(data_type *)(((iterator *)it)->vector.current);
 }
 
 void *ft_vector_iterator_increment(void *it)
 {
-	((iterator *)it)->vector.current++;
+	((iterator *)it)->vector.current += ((iterator *)it)->vector.align;
 	return it;
 }
 
 void *ft_vector_iterator_decrement(void *it)
 {
-	((iterator *)it)->vector.current--;
+	((iterator *)it)->vector.current -=	((iterator *)it)->vector.align;
 	return it;
 }
 
 void *ft_vector_iterator_add(void *it, ssize_t to_add)
 {
-	((iterator *)it)->vector.current += to_add;
+	((iterator *)it)->vector.current += to_add * ((iterator *)it)->vector.align;
 	return it;
 }
 
 ssize_t	ft_vector_iterator_diff(void *l, void *r)
 {
-	return ((iterator *)r)->vector.current - ((iterator *)l)->vector.current;
+	return (((iterator *)r)->vector.current - ((iterator *)l)->vector.current) / ((iterator *)l)->vector.align;
 }

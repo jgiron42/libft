@@ -50,6 +50,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		other/ft_putnbr_fd.c	\
 		other/ft_putstr_fd.c	\
 		other/ft_split.c	\
+		string/ft_strcat.c	\
 		string/ft_strchr.c	\
 		string/ft_strcpy.c	\
 		string/ft_strdup.c	\
@@ -131,6 +132,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		containers/list.c \
 		containers/btree.c \
 		containers/vector.c \
+		containers/string.c \
 		containers/iterator.c \
 		containers/oo_utils.c
 

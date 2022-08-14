@@ -51,9 +51,14 @@ typedef struct {
 	size_t		size;
 	union {
 		struct {
-			data_type	*data;
+			char	*data;
 			size_t		capacity;
+			int			align;
 		}	vector;
+		struct {
+			char	*data;
+			size_t	capacity;
+		}	string;
 		struct {
 			list_node past_the_end;
 		}	list;
@@ -79,14 +84,15 @@ typedef struct s_iterator {
 	type_metadata		metadata;
 	union {
 		struct {
-			data_type *current;
+			char	*current;
+			int		align;
 		}	vector;
 		struct {
-			list_node *current;
+			list_node	*current;
 		}	list;
 		struct {
 			type_metadata		key_prop;
-			btree_node *current;
+			btree_node	*current;
 		}	btree;
 	};
 }		iterator;
@@ -108,6 +114,15 @@ status	atomic_constructor(type_metadata prop,  void *ptr);
 int	atomic_compare(type_metadata prop, void *l, void *r);
 
 #define ATOMIC_TYPE ((type_metadata){.constructor = &atomic_constructor, .destructor = &atomic_destructor, .copy = &atomic_copy, .assign = &atomic_assign, .compare = &atomic_compare})
+
+status byte_constructor(type_metadata prop,  void *ptr);
+void byte_destructor(type_metadata prop,  void *ptr);
+status byte_copy(type_metadata prop,  void *dst, const void *src);
+status byte_assign(type_metadata prop,  void *dst, const void *src);
+int	byte_compare(type_metadata prop, void *l, void *r);
+
+#define BYTE_TYPE ((type_metadata){.constructor = &byte_constructor, .destructor = &byte_destructor, .copy = &byte_copy, .assign = &byte_assign, .compare = &byte_compare})
+
 
 size_t		distance(iterator begin, iterator end);
 iterator	ft_iterator_advance(iterator it, int n);
@@ -140,6 +155,15 @@ data_type	ft_vector_iterator_dereference(void *it);
 int			ft_vector_iterator_compare(type_metadata prop, void *l, void *r);
 
 #define FT_VECTOR_ITERATOR ((type_metadata){.constructor = &pointer_constructor, .destructor = &pointer_destructor, .copy = &pointer_copy, .assign = &pointer_assign, .compare = &ft_vector_iterator_compare, .increment = &ft_vector_iterator_increment, .decrement = &ft_vector_iterator_decrement, .dereference = &ft_vector_iterator_dereference, .add = &ft_vector_iterator_add, .size = sizeof( iterator )})
+
+// string
+status ft_string(void *dst, char *str);
+char	*ft_string_c_str(container *this);
+
+status path_pop(container *this);
+status path_push(container *this, char *component);
+
+#define FT_STRING_ITERATOR ((type_metadata){.constructor = &pointer_constructor, .destructor = &pointer_destructor, .copy = &pointer_copy, .assign = &pointer_assign, .compare = &ft_string_iterator_compare, .increment = &ft_string_iterator_increment, .decrement = &ft_string_iterator_decrement, .dereference = &ft_string_iterator_dereference, .add = &ft_string_iterator_add, .size = sizeof( iterator )})
 
 // list
 

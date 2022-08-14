@@ -32,9 +32,48 @@ int	atomic_compare(type_metadata prop, void *l, void *r)
 	(void)prop;
 
 	if (*(uint64_t *)l <
-	        *(uint64_t *)r)
+		*(uint64_t *)r)
 		return -1;
 	else if (*(uint64_t *)l > *(uint64_t *)r)
+		return 1;
+	return 0;
+}
+
+status byte_constructor(type_metadata prop,  void *ptr)
+{
+	(void)prop;
+	*(char *)ptr = 0;
+	return OK;
+}
+
+void byte_destructor(type_metadata prop,  void *ptr)
+{
+	(void)prop;
+	*(char *)ptr = 0;
+}
+
+status byte_copy(type_metadata prop,  void *dst, const void *src)
+{
+	(void)prop;
+	*(char *)dst = *(char *)src;
+	return OK;
+}
+
+status byte_assign(type_metadata prop,  void *dst, const void *src)
+{
+	(void)prop;
+	*(char *)dst = *(char *)src;
+	return OK;
+}
+
+int	byte_compare(type_metadata prop, void *l, void *r)
+{
+	(void)prop;
+
+	if (*(char *)l <
+	        *(char *)r)
+		return -1;
+	else if (*(char *)l > *(char *)r)
 		return 1;
 	return 0;
 }
