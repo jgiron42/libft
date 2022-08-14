@@ -134,7 +134,8 @@ void	deep_clear(container *this, btree_node *n)
 
 void	ft_btree_clear(container *this)
 {
-	deep_clear(this, this->btree.past_the_end.right);
+	if (this->btree.past_the_end.right)
+		deep_clear(this, this->btree.past_the_end.right);
 	this->btree.past_the_end.left = NULL;
 	this->btree.past_the_end.right = NULL;
 	this->size = 0;
