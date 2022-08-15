@@ -27,6 +27,16 @@ size_t ft_string_size(const container *src)
 	return src->size - 1;
 }
 
+status	ft_string_append(container *this, char *str)
+{
+	size_t len = ft_strlen(str);
+	if (this->size + len > this->vector.capacity && ft_vector_expand(this, len) != OK)
+		return FATAL;
+	ft_strcpy(this->vector.data + this->size - 1, str);
+	this->size += len;
+	return OK;
+}
+
 status path_pop(container *this)
 {
 	if (!this->vector.data)
