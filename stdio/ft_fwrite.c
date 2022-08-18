@@ -12,6 +12,7 @@ size_t	ft_fwrite(const void *ptr, size_t size, size_t nmemb, ft_FILE *stream)
 		if (tmp) {
 			ft_memcpy(stream->wbuf + stream->wbuflen, ptr, tmp);
 			stream->wbuflen += tmp;
+			stream->position.pos += (ssize_t)tmp;
 		}
 		return (size);
 	}
