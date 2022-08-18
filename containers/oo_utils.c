@@ -96,8 +96,6 @@ void pointer_destructor(type_metadata prop,  void *ptr)
 
 status pointer_copy(type_metadata prop,  void *dst, const void *src)
 {
-	if (*(void **)dst)
-		free(*(void **)dst);
 	*(void **)dst = malloc(prop.size);
 	if (!*(void **)dst)
 		return (FATAL);
