@@ -13,6 +13,7 @@ status ft_btree_default(type_metadata metadata, void *dst)
 							.left = NULL,
 							.right = NULL,
 					},
+					.multi = false
 			},
 	};
 	(*(container *)dst).btree.first = &(*(container *)dst).btree.past_the_end;
@@ -32,6 +33,7 @@ status ft_btree(type_metadata value, void *dst)
 							.left = NULL,
 							.right = NULL,
 					},
+					.multi = false
 			},
 	};
 	(*(container *)dst).btree.first = &(*(container *)dst).btree.past_the_end;
@@ -178,7 +180,7 @@ iterator	ft_btree_insert_recurse(container *this, btree_node *current, data_type
 			return ft_btree_insert_recurse(this, current->left, value);
 		dst = &current->left;
 	}
-	else if (tmp > 0)
+	else if (tmp > 0 || (this->btree.multi && tmp == 0))
 	{
 		if (current->right)
 			return ft_btree_insert_recurse(this, current->right, value);

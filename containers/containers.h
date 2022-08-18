@@ -66,6 +66,7 @@ typedef struct {
 			btree_node *first;
 			btree_node *last;
 			btree_node past_the_end;
+			bool		multi; // true if multiset
 		}	btree;
 	};
 }		container;
