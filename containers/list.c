@@ -12,6 +12,11 @@ status ft_list_default(type_metadata metadata, void *dst)
 							.prev = NULL,
 					},
 			},
+			.begin = &ft_list_begin,
+			.end = &ft_list_end,
+			.clear = &ft_list_clear,
+			.destroy = &ft_list_destructor,
+			.copy = &ft_list_copy,
 	};
 	return OK;
 }
@@ -28,6 +33,11 @@ status ft_list(type_metadata meta, void *dst)
 						.prev = NULL,
 					},
 			},
+			.begin = &ft_list_begin,
+			.end = &ft_list_end,
+			.clear = &ft_list_clear,
+			.destroy = &ft_list_destructor,
+			.copy = &ft_list_copy,
 	};
 	return OK;
 }
