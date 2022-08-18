@@ -14,6 +14,11 @@ status ft_btree_default(type_metadata metadata, void *dst)
 							.right = NULL,
 					},
 			},
+			.begin = &ft_btree_begin,
+			.end = &ft_btree_end,
+			.clear = &ft_btree_clear,
+			.destroy = &ft_btree_destructor,
+			.copy = &ft_btree_copy,
 	};
 	(*(container *)dst).btree.first = &(*(container *)dst).btree.past_the_end;
 	(*(container *)dst).btree.last = &(*(container *)dst).btree.past_the_end;
@@ -33,6 +38,11 @@ status ft_btree(type_metadata value, void *dst)
 							.right = NULL,
 					},
 			},
+			.begin = &ft_btree_begin,
+			.end = &ft_btree_end,
+			.clear = &ft_btree_clear,
+			.destroy = &ft_btree_destructor,
+			.copy = &ft_btree_copy,
 	};
 	(*(container *)dst).btree.first = &(*(container *)dst).btree.past_the_end;
 	(*(container *)dst).btree.last = &(*(container *)dst).btree.past_the_end;
@@ -61,7 +71,7 @@ iterator ft_btree_end(container *this)
 		.container_type = FT_BTREE,
 		.btree = {
 				.current = &this->btree.past_the_end,
-		}
+		},
 	};
 }
 

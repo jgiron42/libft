@@ -6,7 +6,8 @@
 typedef enum {
 	FT_VECTOR,
 	FT_BTREE,
-	FT_LIST
+	FT_LIST,
+	FT_BHEAP
 }		container_type;
 
 typedef void*  data_type;
@@ -45,7 +46,9 @@ typedef struct s_list_node {
 	struct s_list_node *prev;
 }	list_node;
 
-typedef struct {
+struct s_iterator;
+
+typedef struct s_container {
 	container_type type;
 	type_metadata value_type_metadata;
 	size_t		size;
@@ -67,7 +70,16 @@ typedef struct {
 			btree_node *last;
 			btree_node past_the_end;
 		}	btree;
+		struct {
+			btree_node *root;
+			btree_node *last;
+		}	bheap;
 	};
+	struct s_iterator	(*begin)(struct s_container *);
+	struct s_iterator	(*end)(struct s_container *);
+	void				(*destroy)(struct s_container *this);
+	void				(*clear)(struct s_container *this);
+	status				(*copy)(struct s_type_metadata meta, void *dst, const void *src);
 }		container;
 
 typedef struct s_iterator {
@@ -159,6 +171,7 @@ int			ft_vector_iterator_compare(type_metadata prop, void *l, void *r);
 // string
 status ft_string(void *dst, char *str);
 char	*ft_string_c_str(container *this);
+status	ft_string_append(container *this, char *str);
 
 status path_pop(container *this);
 status path_push(container *this, char *component);

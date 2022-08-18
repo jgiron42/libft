@@ -10,7 +10,12 @@ status ft_string(void *dst, char *str)
 					.data = ft_strdup(str),
 					.capacity = ft_strlen(str) + 1,
 					.align = sizeof(char),
-			}
+			},
+			.begin = &ft_vector_begin,
+			.end = &ft_vector_end,
+			.clear = &ft_vector_clear,
+			.destroy = &ft_vector_destructor,
+			.copy = &ft_vector_copy,
 	};
 	if ((*(container *)dst).vector.data == NULL)
 		return FATAL;

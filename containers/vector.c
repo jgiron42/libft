@@ -10,7 +10,12 @@ status ft_vector_default(type_metadata metadata, void *dst)
 				.data = NULL,
 				.capacity = 0,
 				.align = sizeof(data_type),
-		}
+		},
+		.begin = &ft_vector_begin,
+		.end = &ft_vector_end,
+		.clear = &ft_vector_clear,
+		.destroy = &ft_vector_destructor,
+		.copy = &ft_vector_copy,
 	};
 	return OK;
 }
@@ -25,7 +30,12 @@ status ft_vector(type_metadata meta, void *dst)
 				.data = NULL,
 				.capacity = 0,
 				.align = sizeof(data_type),
-		}
+		},
+		.begin = &ft_vector_begin,
+		.end = &ft_vector_end,
+		.clear = &ft_vector_clear,
+		.destroy = &ft_vector_destructor,
+		.copy = &ft_vector_copy,
 	};
 	return OK;
 }
