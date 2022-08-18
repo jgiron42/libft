@@ -46,8 +46,16 @@ status path_pop(container *this)
 	char *tmp = ft_strrchr(this->vector.data, '/');
 	if (tmp)
 	{
-		*tmp = '\0';
-		this->size = tmp - this->vector.data + 1;
+		if (tmp == this->vector.data)
+		{
+			tmp[1] = 0;
+			this->size = 2;
+		}
+		else
+		{
+			*tmp = '\0';
+			this->size = tmp - this->vector.data + 1;
+		}
 	}
 	else
 	{
