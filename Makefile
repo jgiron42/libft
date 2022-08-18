@@ -118,6 +118,8 @@ SRCS    =	stdlib/ft_atoi.c \
         stdio/globals.c \
 		stdio/printf/ft_vfprintf.c \
 		stdio/printf/ft_fprintf.c \
+		stdio/printf/ft_vsprintf.c \
+		stdio/printf/ft_sprintf.c \
 		stdio/printf/ft_vprintf.c \
 		stdio/printf/ft_printf.c \
 		stdio/printf/handle_i.c \
