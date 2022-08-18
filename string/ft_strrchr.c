@@ -16,10 +16,10 @@ char	*ft_strrchr(const char *s, int c)
 {
 	if ((char)c == 0)
 		return ((char *)s + ft_strlen(s));
-	for (size_t i = ft_strlen(s) - 1; i > 0; i--)
+	for (size_t i = ft_strlen(s); i > 0; i--)
 	{
-		if (s[i] == (char)c)
-			return ((char *)s + i);
+		if (s[i - 1] == (char)c)
+			return ((char *)s + i - 1);
 	}
 	return (NULL);
 }
