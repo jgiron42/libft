@@ -7,14 +7,16 @@ size_t	ft_fwrite(const void *ptr, size_t size, size_t nmemb, ft_FILE *stream)
 	size_t tmp = size * nmemb;
 	if (stream->flags == FT_STDIO_STRINGSTREAM)
 	{
+		stream->position.pos += (ssize_t)tmp; // TODO: check if this is correct
+		if (stream->wbufcap <= stream->wbuflen)
+			return 0;
 		if (tmp + stream->wbuflen > stream->wbufcap)
 			tmp = stream->wbufcap - stream->wbuflen;
 		if (tmp) {
 			ft_memcpy(stream->wbuf + stream->wbuflen, ptr, tmp);
 			stream->wbuflen += tmp;
-			stream->position.pos += (ssize_t)tmp;
 		}
-		return (size);
+		return (tmp);
 	}
 	if (stream->wbuflen + tmp > stream->wbufcap)
 		ft_fflush(stream);
