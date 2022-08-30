@@ -43,8 +43,7 @@ static const int t_printf_length_modifier_size[] = {
 };
 
 enum ft_printf_length_modifier {
-	FT_PRINTF_LENGTH_DEFAULT,
-	FT_PRINTF_LENGTH_hh,
+	FT_PRINTF_LENGTH_hh = 0,
 	FT_PRINTF_LENGTH_h,
 	FT_PRINTF_LENGTH_l,
 	FT_PRINTF_LENGTH_ll,
@@ -53,7 +52,8 @@ enum ft_printf_length_modifier {
 	FT_PRINTF_LENGTH_j,
 	FT_PRINTF_LENGTH_z,
 	FT_PRINTF_LENGTH_Z,
-	FT_PRINTF_LENGTH_t
+	FT_PRINTF_LENGTH_t,
+	FT_PRINTF_LENGTH_DEFAULT,
 };
 
 typedef struct {

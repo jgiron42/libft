@@ -32,6 +32,9 @@ typedef enum {
 	FATAL,
 }		status;
 
+// quick way to switch on a status variable
+# define SWITCH_STATUS(status, ok, ko, fatal) switch (status) {case OK:ok;break;case KO:ko;;break;case FATAL:fatal;break;default:break;}
+
 typedef struct s_list
 {
 	void			*content;
