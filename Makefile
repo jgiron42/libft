@@ -120,6 +120,8 @@ SRCS    =	stdlib/ft_atoi.c \
 		stdio/printf/ft_fprintf.c \
 		stdio/printf/ft_vsprintf.c \
 		stdio/printf/ft_sprintf.c \
+		stdio/printf/ft_vsnprintf.c \
+		stdio/printf/ft_snprintf.c \
 		stdio/printf/ft_vprintf.c \
 		stdio/printf/ft_printf.c \
 		stdio/printf/handle_i.c \
