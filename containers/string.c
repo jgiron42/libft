@@ -22,6 +22,15 @@ status ft_string(void *dst, char *str)
 	return OK;
 }
 
+void	ft_string_clear(container *this)
+{
+	if (this->size)
+	{
+		this->size = 1;
+		this->vector.data[0] = 0;
+	}
+}
+
 char	*ft_string_c_str(container *this)
 {
 	return (char *)this->vector.data;

@@ -18,6 +18,11 @@ int	parse_fwidth(internal_printf *conv, va_list arg)
 	if (**conv->format == '*')
 	{
 		conv->fwidth = va_arg(arg, int);
+		if (conv->fwidth < 0)
+		{
+			conv->fwidth = -conv->fwidth;
+			conv->flags |= FT_PRINTF_HYPHEN;
+		}
 		(*conv->format)++;
 		return (0);
 	}
@@ -58,11 +63,9 @@ int	parse_length(internal_printf *conv, va_list arg)
 	while (ft_printf_length_modifier_char[i] &&
 	ft_strncmp(*conv->format, ft_printf_length_modifier_char[i], ft_strlen(ft_printf_length_modifier_char[i])))
 		i++;
+	conv->length = i;
 	if (ft_printf_length_modifier_char[i])
-	{
-		conv->length = i - 1;
 		*conv->format += ft_strlen(ft_printf_length_modifier_char[i]);
-	}
 	return 0;
 }
 

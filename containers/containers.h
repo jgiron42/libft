@@ -110,6 +110,10 @@ typedef struct s_iterator {
 	};
 }		iterator;
 
+#define for_in(it, cont) for (iterator it = (cont).begin(&(cont)), end = (cont).end(&(cont)); (it).metadata.compare((cont).value_type_metadata, (void *) &(it), (void *) &end); (it).metadata.increment(&(it)))
+// cursed macro but gives a cool way to iterate over a container (for_val_in(data_type val, cont) { ... })
+#define for_val_in(val, cont) for (iterator cursed_it = (cont).begin(&(cont)), end = (cont).end(&(cont)); (cursed_it).metadata.compare((cont).value_type_metadata, (void *) &(cursed_it), (void *) &end); (cursed_it).metadata.increment(&(cursed_it))) for(int cursed = 0; cursed==0;) for(val = cursed_it.metadata.dereference(&cursed_it);cursed==0;cursed++)
+
 status ft_vector(type_metadata type_metadata, void *dst);
 
 status	pointer_assign(type_metadata prop,  void *dst, const void *src);
@@ -173,6 +177,7 @@ int			ft_vector_iterator_compare(type_metadata prop, void *l, void *r);
 status ft_string(void *dst, char *str);
 char	*ft_string_c_str(container *this);
 status	ft_string_append(container *this, char *str);
+void	ft_string_clear(container *this);
 
 status path_pop(container *this);
 status path_push(container *this, char *component);
