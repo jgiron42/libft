@@ -115,6 +115,7 @@ SRCS    =	stdlib/ft_atoi.c \
         stdio/ft_setbuf.c \
         stdio/ft_setvbuf.c \
         stdio/ft_ungetc.c \
+        stdio/ft_ungets.c \
         stdio/globals.c \
 		stdio/printf/ft_vfprintf.c \
 		stdio/printf/ft_fprintf.c \
@@ -137,6 +138,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		containers/btree.c \
 		containers/vector.c \
 		containers/string.c \
+		containers/buffer.c \
 		containers/iterator.c \
 		containers/oo_utils.c
 

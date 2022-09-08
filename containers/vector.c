@@ -170,6 +170,20 @@ status	ft_vector_insert_range(container *this, iterator pos, iterator begin, ite
 	return (OK);
 }
 
+status	ft_vector_insert_count(container *this, iterator pos, data_type val, size_t count)
+{
+	status ret;
+	size_t offset = (pos.vector.current - this->vector.data) / this->vector.align;
+	if (this->vector.capacity - this->size < count && ft_vector_expand(this, count) != OK)
+		return FATAL;
+	ft_memmove((this->vector.data + (offset + count) * this->vector.align), this->vector.data + offset * this->vector.align, (this->size - offset) * this->vector.align);
+	for (size_t i = 0; i < count; i++)
+		if ((ret = pos.value_type_metadata.copy(pos.value_type_metadata, this->vector.data + (offset + i) * this->vector.align, &val)) != OK)
+			return ret;
+	this->size += count;
+	return (OK);
+}
+
 iterator	ft_vector_erase_range(container *this, iterator begin, iterator end)
 {
 	char *tmp = begin.vector.current;
@@ -223,10 +237,24 @@ int	ft_vector_iterator_compare(type_metadata prop, void *l, void *r)
 		return 1;
 	return 0;
 }
-
+typedef struct uint48 {
+	uint64_t x:48;
+} __attribute__((packed)) a;
 data_type ft_vector_iterator_dereference(void *it)
 {
-	return *(data_type *)(((iterator *)it)->vector.current);
+	switch (((iterator*)it)->vector.align)
+	{
+		case 1:
+			return (data_type)(uint64_t)*((uint8_t *)(((iterator *)it)->vector.current));
+		case 2:
+			return (data_type)(uint64_t)*((uint16_t *)(((iterator *)it)->vector.current));
+		case 4:
+			return (data_type)(uint64_t)*((uint32_t *)(((iterator *)it)->vector.current));
+		case 8:
+			return (data_type)(uint64_t)*((uint64_t *)(((iterator *)it)->vector.current));
+		default:
+			return 0;
+	}
 }
 
 void *ft_vector_iterator_increment(void *it)

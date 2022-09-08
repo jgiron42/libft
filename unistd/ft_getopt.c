@@ -12,14 +12,16 @@ int ft_getopt(int argc, char * const argv[], const char *optstring)
 	bool plus_enabled = *optstring == '+';
 	bool minus_enabled = *optstring == '-';
 	bool colon_enabled = optstring[minus_enabled | plus_enabled] == ':';
-	static bool	offset, has_arg;
+	static bool	offset = false, has_arg = false;
 	static int ft_optwordind;
 
+	/*
 	if (ft_optind <= 1) { // reset
 		offset = false;
 		has_arg = false;
 		ft_optwordind = 0;
 	}
+	 */
 	ft_optarg = NULL;
 	while (true) {
 		if (ft_optind >= argc) // no more argv
