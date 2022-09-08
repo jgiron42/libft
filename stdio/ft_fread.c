@@ -12,8 +12,9 @@ size_t	ft_fread(void *ptr, size_t size, size_t nmemb, ft_FILE *stream)
 		{
 			ft_memcpy(ptr, stream->rbuf, toread);
 			stream->rbuflen -= toread;
-			ft_memmove(stream->rbuf, stream->rbuf + (toread), stream->rbuflen);
-			return size;
+			stream->position.pos += toread;
+			ft_memmove(stream->rbuf, stream->rbuf + toread, stream->rbuflen);
+			return size * nmemb;
 		}
 		ft_memcpy(ptr, stream->rbuf, stream->rbuflen);
 		ptr += stream->rbuflen;
@@ -22,15 +23,25 @@ size_t	ft_fread(void *ptr, size_t size, size_t nmemb, ft_FILE *stream)
 		stream->position.pos += stream->rbuflen;
 		stream->rbuflen = 0;
 	}
-	int tmp = read(stream->fd, ptr, toread);
+	if (stream->flags == FT_STDIO_ISTRINGSTREAM)
+	{
+		stream->eof = true;
+		return ret;
+	}
+	int tmp;
+	while (toread > 0 && (tmp = read(stream->fd, ptr, toread)) > 0)
+	{
+		ptr += tmp;
+		ret += tmp;
+		stream->position.pos += tmp;
+		toread -= tmp;
+	}
 	if (tmp == -1)
 	{
 		stream->error = true;
 		return (0);
 	}
-	ret += tmp;
-	stream->position.pos += tmp;
-	if (!ret)
+	if (!tmp)
 		stream->eof = true;
 	return (ret / size);
 }

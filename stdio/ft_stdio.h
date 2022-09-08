@@ -11,6 +11,8 @@
 # define ft_stdout ((ft_FILE *)&stdio_files[1])
 # define ft_stderr ((ft_FILE *)&stdio_files[2])
 
+# define ft_input_string_stream(s) (ft_FILE){.rbuf = s,.rbuflen = ft_strlen(s),.rbufcap = ft_strlen(s),.flags = FT_STDIO_ISTRINGSTREAM,}
+
 enum	ft_stdio_flags {
 	FT_STDIO_R = 1,
 	FT_STDIO_RW,
@@ -18,7 +20,8 @@ enum	ft_stdio_flags {
 	FT_STDIO_WR,
 	FT_STDIO_A,
 	FT_STDIO_AR,
-	FT_STDIO_STRINGSTREAM
+	FT_STDIO_STRINGSTREAM,
+	FT_STDIO_ISTRINGSTREAM
 };
 
 typedef struct
@@ -86,6 +89,7 @@ int		ft_remove(const char *pathname);
 int		ft_rename(const char *oldpath, const char *newpath);
 
 int		ft_ungetc(int c, ft_FILE *stream);
+int		ft_ungets(const char *s, ft_FILE *stream);
 ssize_t  ft_getdelim(char **restrict lineptr, size_t *restrict n, int delim, ft_FILE *restrict stream);
 ssize_t  ft_getline(char **restrict lineptr, size_t *restrict n, ft_FILE *restrict stream);
 

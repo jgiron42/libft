@@ -140,10 +140,8 @@ int	byte_compare(type_metadata prop, void *l, void *r);
 
 #define BYTE_TYPE ((type_metadata){.constructor = &byte_constructor, .destructor = &byte_destructor, .copy = &byte_copy, .assign = &byte_assign, .compare = &byte_compare})
 
-
 size_t		distance(iterator begin, iterator end);
 iterator	ft_iterator_advance(iterator it, int n);
-
 
 // vector
 data_type ft_vector_iterator_dereference(void *it);
@@ -155,6 +153,7 @@ status ft_vector_push_back(container *this, data_type data);
 iterator	ft_vector_erase_one(container *this, iterator it);
 iterator	ft_vector_erase_range(container *this, iterator begin, iterator end);
 status	ft_vector_insert_range(container *this, iterator pos, iterator begin, iterator end);
+status	ft_vector_insert_count(container *this, iterator pos, data_type val, size_t count);
 status	ft_vector_insert_val(container *this, iterator pos, data_type val);
 status	ft_vector_expand(container *dst, size_t count_more);
 iterator ft_vector_end(container *this);
@@ -172,6 +171,10 @@ data_type	ft_vector_iterator_dereference(void *it);
 int			ft_vector_iterator_compare(type_metadata prop, void *l, void *r);
 
 #define FT_VECTOR_ITERATOR ((type_metadata){.constructor = &pointer_constructor, .destructor = &pointer_destructor, .copy = &pointer_copy, .assign = &pointer_assign, .compare = &ft_vector_iterator_compare, .increment = &ft_vector_iterator_increment, .decrement = &ft_vector_iterator_decrement, .dereference = &ft_vector_iterator_dereference, .add = &ft_vector_iterator_add, .size = sizeof( iterator )})
+
+// buffer
+status ft_buffer(void *dst, char *buf, size_t size, size_t cap);
+status ft_buffer_assign(container *this, char *buf, size_t size);
 
 // string
 status ft_string(void *dst, char *str);

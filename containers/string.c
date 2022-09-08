@@ -22,6 +22,40 @@ status ft_string(void *dst, char *str)
 	return OK;
 }
 
+status	ft_string_assign(type_metadata meta, void *dst, void *src)
+{
+	(void)meta;
+	*((container *)dst) = *((container *)src);
+	((container *)src)->size = 0;
+	((container *)src)->vector.capacity = 0;
+	((container *)src)->vector.data = 0;
+	return OK;
+}
+
+status	ft_string_copy(type_metadata meta, void *dst, void *src)
+{
+	(void)meta;
+	*((container *)dst) = *((container *)src);
+	((container *)dst)->vector.data = malloc(((container *)dst)->vector.capacity);
+	if (!((container *)dst)->vector.data)
+		return FATAL;
+	ft_strcpy(((container *)dst)->vector.data, ((container *)src)->vector.data);
+	return OK;
+}
+
+int	ft_string_compare(type_metadata meta, void* left, void* right)
+{
+	(void)meta;
+	if (!((container *)right)->vector.data && !((container *)left)->vector.data)
+		return 0;
+	else if (!((container *)left)->vector.data)
+		return -1;
+	else if (!((container *)right)->vector.data)
+		return 1;
+	else
+		return ft_strcmp(((container *)left)->vector.data, ((container *)right)->vector.data);
+}
+
 void	ft_string_clear(container *this)
 {
 	if (this->size)
