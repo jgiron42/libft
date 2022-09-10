@@ -1,6 +1,7 @@
 #ifndef LIBFT_CONTAINERS_H
 #define LIBFT_CONTAINERS_H
 #include <unistd.h>
+#include <wchar.h>
 #include "../libft.h"
 
 typedef enum {
@@ -163,6 +164,9 @@ void	ft_vector_clear(container *this);
 status ft_vector_copy(struct s_type_metadata meta, void *dst, const void *src);
 status ft_vector(type_metadata meta, void *dst);
 status ft_vector_default(type_metadata metadata, void *dst);
+data_type ft_vector_at(container *this, size_t pos);
+data_type ft_vector_back(container *this);
+data_type ft_vector_front(container *this);
 
 void *ft_vector_iterator_add(void *it, ssize_t to_add);
 void		*ft_vector_iterator_decrement(void *it);

@@ -55,6 +55,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		string/ft_strcpy.c	\
 		string/ft_strdup.c	\
 		string/ft_strndup.c	\
+		string/ft_strstr.c	\
 		other/ft_strjoin.c	\
 		other/ft_append.c	\
 		other/ft_strlcat.c	\
@@ -140,7 +141,10 @@ SRCS    =	stdlib/ft_atoi.c \
 		containers/string.c \
 		containers/buffer.c \
 		containers/iterator.c \
-		containers/oo_utils.c
+		containers/oo_utils.c \
+		regex/ft_regcomp.c \
+		regex/ft_regexec.c \
+		regex/ft_regfree.c
 
 
 
@@ -150,7 +154,7 @@ HEADER	=	libft.h
 
 NAME    =	libft.a
 
-CFLAGS  +=	-Wall -Werror -Wextra -g3 -D ENABLE_STRERROR
+CFLAGS  +=	-Wall -Werror -Wextra -g3 -D ENABLE_STRERROR # -fsanitize=address
 
 all	:	$(NAME)
 

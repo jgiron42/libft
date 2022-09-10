@@ -228,6 +228,32 @@ void ft_vector_pop_front(container *this)
 	ft_vector_erase_one(this, ft_vector_begin(this));
 }
 
+data_type ft_vector_at(container *this, size_t pos)
+{
+	switch (this->vector.align)
+	{
+		case 1:
+			return (data_type)(uint64_t)*((uint8_t *)(this->vector.data + this->vector.align * pos));
+		case 2:
+			return (data_type)(uint64_t)*((uint16_t *)(this->vector.data + this->vector.align * pos));
+		case 4:
+			return (data_type)(uint64_t)*((uint32_t *)(this->vector.data + this->vector.align * pos));
+		case 8:
+			return (data_type)(uint64_t)*((uint64_t *)(this->vector.data + this->vector.align * pos));
+		default:
+			return 0;
+	}
+}
+data_type ft_vector_back(container *this)
+{
+	return ft_vector_at(this, this->size - 1);
+}
+
+data_type ft_vector_front(container *this)
+{
+	return ft_vector_at(this, 0);
+}
+
 int	ft_vector_iterator_compare(type_metadata prop, void *l, void *r)
 {
 	(void)prop;
@@ -237,9 +263,7 @@ int	ft_vector_iterator_compare(type_metadata prop, void *l, void *r)
 		return 1;
 	return 0;
 }
-typedef struct uint48 {
-	uint64_t x:48;
-} __attribute__((packed)) a;
+
 data_type ft_vector_iterator_dereference(void *it)
 {
 	switch (((iterator*)it)->vector.align)
