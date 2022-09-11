@@ -228,7 +228,7 @@ void ft_vector_pop_front(container *this)
 	ft_vector_erase_one(this, ft_vector_begin(this));
 }
 
-data_type ft_vector_at(container *this, size_t pos)
+data_type ft_vector_at(const container *this, size_t pos)
 {
 	switch (this->vector.align)
 	{
