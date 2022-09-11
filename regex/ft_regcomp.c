@@ -23,7 +23,7 @@ int asterisk_handler(ft_regex_t *restrict preg, const char *restrict pattern)
 	return 0;
 }
 
-int range_handler(ft_regex_t *restrict preg, const char *restrict pattern)
+int range_repeat_handler(ft_regex_t *restrict preg, const char *restrict pattern)
 {
 	preg->state.index++;
 	if (!strstr(pattern + preg->state.index, "\\}"))
@@ -258,6 +258,26 @@ int invert_bracket_handler(ft_regex_t *restrict preg, const char *restrict patte
 	return 0;
 }
 
+int char_range_handler(ft_regex_t *restrict preg, const char *restrict pattern)
+{
+	reg_node *last = ft_vector_back(&preg->state.current->sub);
+	if (last->type != REG_CHAR || !ft_isascii(last->_char) || !pattern[preg->state.index + 1] || !ft_isascii(pattern[preg->state.index + 1]))
+		return regular_handler(preg, pattern);
+	last->type = REG_RANGE;
+	if (last->_char < pattern[preg->state.index + 1]) {
+		last->range.begin = last->_char;
+		last->range.end = pattern[preg->state.index + 1];
+	}
+	else {
+		last->range.begin = pattern[preg->state.index + 1];
+		last->range.end = last->_char;
+	}
+	preg->state.index += 2;
+	return 0;
+}
+
+
+
 int    ft_regcomp(ft_regex_t *restrict preg, const char *restrict pattern, int cflags)
 {
 	preg->state.context = REG_FIRST;
@@ -270,7 +290,8 @@ int    ft_regcomp(ft_regex_t *restrict preg, const char *restrict pattern, int c
 
 	// init root:
 	if (!(preg->root = new_node(&preg->node_vec, (reg_node){.type = REG_SUB, .parent = NULL})) ||
-		(ft_vector(ATOMIC_TYPE, &preg->root->sub) != OK))
+		(ft_vector(ATOMIC_TYPE, &preg->root->sub) != OK) ||
+			ft_vector_push_back(&preg->sub_vec, preg->root) == KO)
 		return FT_REG_ESPACE;
 	preg->state.current = preg->root;
 

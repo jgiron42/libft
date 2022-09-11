@@ -16,7 +16,10 @@ bool	match_one_char(const ft_regex_t *restrict r, reg_node *node, char *s)
 			match = (!strcoll((char[2]) {s[node->end], 0}, (char[2]) {node->equivalence_class, 0}));
 			break;
 		case REG_CLASS:
-			match = !!(iswctype(s[node->end], node->char_class));
+			match = (iswctype(s[node->end], node->char_class)) != 0;
+			break;
+		case REG_RANGE:
+			match = (s[node->end] >= node->range.begin && s[node->end] <= node->range.end);
 			break;
 		case REG_BRACKET:
 		{
@@ -57,8 +60,7 @@ int		easy_way(const ft_regex_t *restrict r, char *s)
 		child->begin = parent->end;
 		child->end = parent->end;
 	}
-	switch (child->type)
-	{
+	switch (child->type) {
 		case REG_DOT:
 		case REG_CHAR:
 		case REG_EQUIVALENCE:
@@ -124,15 +126,22 @@ int		easy_way(const ft_regex_t *restrict r, char *s)
 
 int    ft_regexec(const ft_regex_t *restrict r, const char *restrict string, size_t nmatch, ft_regmatch_t pmatch[restrict], int eflags)
 {
-	(void)nmatch;
-	(void)pmatch;
 	(void)eflags;
+	int ret = 0;
 	if (!ft_memchr(r->root->sub_expr_dependency, true, sizeof r->root->sub_expr_dependency)) // no backref = sweet O(n) algorithm
-	{
-		int ret = easy_way(r, (char *)string);
-		return ret;
-	}
-	else // Oh no! backrefs!!! O(n^(2k+2)) *cry in C*
+		ret = easy_way(r, (char *)string);
+	else // Oh no! backrefs!!! O(n^(2k+2)) algorithm *cry in C*
 		ft_fprintf(ft_stderr, "AAAAAAAAAAAAAAAAAAAAAAAAAAAH!!!!");
-	return true;
+	if (!ret)
+		for (size_t i = 0; i < nmatch; i++)
+		{
+			if (i < r->sub_vec.size)
+			{
+				reg_node *current = ft_vector_at(&r->sub_vec, i);
+				pmatch[i] = (ft_regmatch_t){current->begin, current->end};
+			}
+			else
+				pmatch[i] = (ft_regmatch_t){-1, -1};
+		}
+	return ret;
 }
