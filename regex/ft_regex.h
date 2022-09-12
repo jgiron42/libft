@@ -24,6 +24,8 @@ typedef struct {
 typedef struct {
 	ft_regoff_t			rm_so; // Byte offset from start of string to start of substring
 	ft_regoff_t			rm_eo; // Byte offset from start of string of the first character after the end of substring.
+	ft_regoff_t			tmp_so;
+	ft_regoff_t			tmp_eo;
 }		ft_regmatch_t;
 
 
