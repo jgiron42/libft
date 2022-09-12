@@ -7,52 +7,38 @@ reg_node *new_node(container *vec, reg_node  node)
 	return ft_vector_back(vec);
 }
 
-int asterisk_handler(ft_regex_t *restrict preg, const char *restrict pattern)
+int	generic_interval(ft_regex_t *restrict preg, long int begin, long int end)
 {
-	(void)pattern;
 	reg_node *tmp = new_node(&preg->node_vec, (reg_node){.type = REG_REPEATED, .parent = preg->state.current, .repeated = {
 			.tok = ft_vector_back(&preg->state.current->sub), // the repeated element is the last from the parent
-			.min = 0,
-			.max = FT_RE_DUP_MAX
+			.min = begin,
+			.max = end
 	}});
 	ft_vector_pop_back(&preg->state.current->sub); // remove the element from the parent
 	if (ft_vector_push_back(&preg->state.current->sub, tmp) != OK)
 		return FT_REG_ESPACE;
 	tmp->repeated.tok->parent = tmp;
+	ft_memcpy(tmp->sub_expr_dependency, tmp->repeated.tok->parent->sub_expr_dependency, sizeof(tmp->sub_expr_dependency));
 	preg->state.index++;
 	return 0;
+}
+
+int asterisk_handler(ft_regex_t *restrict preg, const char *restrict pattern)
+{
+	(void)pattern;
+	return generic_interval(preg, 0, FT_RE_DUP_MAX);
 }
 
 int question_mark_handler(ft_regex_t *restrict preg, const char *restrict pattern)
 {
 	(void)pattern;
-	reg_node *tmp = new_node(&preg->node_vec, (reg_node){.type = REG_REPEATED, .parent = preg->state.current, .repeated = {
-			.tok = ft_vector_back(&preg->state.current->sub), // the repeated element is the last from the parent
-			.min = 0,
-			.max = 1
-	}});
-	ft_vector_pop_back(&preg->state.current->sub); // remove the element from the parent
-	if (ft_vector_push_back(&preg->state.current->sub, tmp) != OK)
-		return FT_REG_ESPACE;
-	tmp->repeated.tok->parent = tmp;
-	preg->state.index++;
-	return 0;
+	return generic_interval(preg, 0, 1);
 }
 
 int plus_handler(ft_regex_t *restrict preg, const char *restrict pattern)
 {
 	(void)pattern;
-	reg_node *tmp = new_node(&preg->node_vec, (reg_node){.type = REG_REPEATED, .parent = preg->state.current, .repeated = {
-			.tok = ft_vector_back(&preg->state.current->sub), // the repeated element is the last from the parent
-			.min = 1,
-			.max = FT_RE_DUP_MAX
-	}});
-	ft_vector_pop_back(&preg->state.current->sub); // remove the element from the parent
-	if (ft_vector_push_back(&preg->state.current->sub, tmp) != OK)
-		return FT_REG_ESPACE;
-	tmp->repeated.tok->parent = tmp;
-	preg->state.index++;
-	return 0;
+	return generic_interval(preg, 1, FT_RE_DUP_MAX);
 }
 
 int range_repeat_handler(ft_regex_t *restrict preg, const char *restrict pattern)
@@ -75,17 +61,8 @@ int range_repeat_handler(ft_regex_t *restrict preg, const char *restrict pattern
 	}
 	if (min < 0 || min > FT_RE_DUP_MAX || max < 0 || max > FT_RE_DUP_MAX || ft_strncmp(end, &"\\}" [ (preg->cflags & FT_REG_EXTENDED)], 2 - (preg->cflags & FT_REG_EXTENDED)))
 		return FT_REG_BADBR;
-	reg_node *tmp = new_node(&preg->node_vec, (reg_node){.type = REG_REPEATED, .parent = preg->state.current, .repeated = {
-			.tok = ft_vector_back(&preg->state.current->sub), // the repeated element is the last from the parent
-			.min = min,
-			.max = max
-	}});
-
-	ft_vector_pop_back(&preg->state.current->sub); // remove the element from the parent
-	if (ft_vector_push_back(&preg->state.current->sub, tmp) != OK)
-		return FT_REG_ESPACE;
 	preg->state.index = end - pattern + 1 + !(preg->cflags & FT_REG_EXTENDED);
-	return 0;
+	return generic_interval(preg, min, max);
 }
 
 int open_bracket_handler(ft_regex_t *restrict preg, const char *restrict pattern)
@@ -124,6 +101,7 @@ int open_subexpr_handler(ft_regex_t *restrict preg, const char *restrict pattern
 		return FT_REG_ESPACE;
 	if (ft_vector_push_back(&preg->state.current->sub, tmp) != OK)
 		return FT_REG_ESPACE;
+	tmp->sub_index = preg->sub_vec.size;
 	if (ft_vector_push_back(&preg->sub_vec, tmp) != OK)
 		return FT_REG_ESPACE;
 	preg->state.current = tmp;

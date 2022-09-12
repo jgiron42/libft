@@ -144,6 +144,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		containers/oo_utils.c \
 		regex/ft_regcomp.c \
 		regex/ft_regexec.c \
+		regex/ft_regerror.c \
 		regex/ft_regfree.c
 
 

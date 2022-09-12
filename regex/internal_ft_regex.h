@@ -33,10 +33,8 @@ typedef struct reg_node {
 	reg_token_type	type;
 	bool			invert;
 	char			sub_expr_dependency[9]; // on which sub expr depends this node
+	size_t			sub_index;
 	ssize_t 		current;
-	size_t			begin;
-	size_t			end;
-	ssize_t 			matched;
 	union {
 		wchar_t _char;
 		struct {
@@ -63,6 +61,15 @@ typedef struct
 	reg_node	*current;
 	size_t		index;
 }		reg_state;
+
+typedef struct
+{
+	size_t			begin;
+	size_t			end;
+	ft_regmatch_t	*pmatch;
+	size_t			nmatch;
+	int				eflags;
+}		regexec_t;
 
 typedef int (*reg_handler)(ft_regex_t *restrict preg, const char *restrict pattern);
 
