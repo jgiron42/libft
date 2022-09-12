@@ -23,10 +23,42 @@ int asterisk_handler(ft_regex_t *restrict preg, const char *restrict pattern)
 	return 0;
 }
 
+int question_mark_handler(ft_regex_t *restrict preg, const char *restrict pattern)
+{
+	(void)pattern;
+	reg_node *tmp = new_node(&preg->node_vec, (reg_node){.type = REG_REPEATED, .parent = preg->state.current, .repeated = {
+			.tok = ft_vector_back(&preg->state.current->sub), // the repeated element is the last from the parent
+			.min = 0,
+			.max = 1
+	}});
+	ft_vector_pop_back(&preg->state.current->sub); // remove the element from the parent
+	if (ft_vector_push_back(&preg->state.current->sub, tmp) != OK)
+		return FT_REG_ESPACE;
+	tmp->repeated.tok->parent = tmp;
+	preg->state.index++;
+	return 0;
+}
+
+int plus_handler(ft_regex_t *restrict preg, const char *restrict pattern)
+{
+	(void)pattern;
+	reg_node *tmp = new_node(&preg->node_vec, (reg_node){.type = REG_REPEATED, .parent = preg->state.current, .repeated = {
+			.tok = ft_vector_back(&preg->state.current->sub), // the repeated element is the last from the parent
+			.min = 1,
+			.max = FT_RE_DUP_MAX
+	}});
+	ft_vector_pop_back(&preg->state.current->sub); // remove the element from the parent
+	if (ft_vector_push_back(&preg->state.current->sub, tmp) != OK)
+		return FT_REG_ESPACE;
+	tmp->repeated.tok->parent = tmp;
+	preg->state.index++;
+	return 0;
+}
+
 int range_repeat_handler(ft_regex_t *restrict preg, const char *restrict pattern)
 {
 	preg->state.index++;
-	if (!strstr(pattern + preg->state.index, "\\}"))
+	if (!strstr(pattern + preg->state.index, &"\\}" [ (preg->cflags & FT_REG_EXTENDED)]))
 		return FT_REG_EBRACE;
 	char *end;
 	long int min = ft_strtol(pattern + preg->state.index, &end, 10);
@@ -41,7 +73,7 @@ int range_repeat_handler(ft_regex_t *restrict preg, const char *restrict pattern
 			end++;
 		}
 	}
-	if (min < 0 || min > FT_RE_DUP_MAX || max < 0 || max > FT_RE_DUP_MAX || ft_strncmp(end, "\\}", 2))
+	if (min < 0 || min > FT_RE_DUP_MAX || max < 0 || max > FT_RE_DUP_MAX || ft_strncmp(end, &"\\}" [ (preg->cflags & FT_REG_EXTENDED)], 2 - (preg->cflags & FT_REG_EXTENDED)))
 		return FT_REG_BADBR;
 	reg_node *tmp = new_node(&preg->node_vec, (reg_node){.type = REG_REPEATED, .parent = preg->state.current, .repeated = {
 			.tok = ft_vector_back(&preg->state.current->sub), // the repeated element is the last from the parent
@@ -52,7 +84,7 @@ int range_repeat_handler(ft_regex_t *restrict preg, const char *restrict pattern
 	ft_vector_pop_back(&preg->state.current->sub); // remove the element from the parent
 	if (ft_vector_push_back(&preg->state.current->sub, tmp) != OK)
 		return FT_REG_ESPACE;
-	preg->state.index = end - pattern;
+	preg->state.index = end - pattern + 1 + !(preg->cflags & FT_REG_EXTENDED);
 	return 0;
 }
 
@@ -65,8 +97,13 @@ int open_bracket_handler(ft_regex_t *restrict preg, const char *restrict pattern
 	if (ft_vector_push_back(&preg->state.current->sub, tmp) != OK)
 		return FT_REG_ESPACE;
 	preg->state.current = tmp;
-	preg->state.context |= REG_IN_BRACKET | REG_FIRST_IN_BRACKET;
+	preg->state.context |= REG_IN_BRACKET;
 	preg->state.index++;
+	if (pattern[preg->state.index] == '^')
+	{
+		tmp->invert = true;
+		preg->state.index++;
+	}
 	return 0;
 }
 
@@ -142,7 +179,7 @@ int regular_handler(ft_regex_t *restrict preg, const char *restrict pattern)
 
 int escaped_regular_handler(ft_regex_t *restrict preg, const char *restrict pattern)
 {
-	if (ft_isdigit(pattern[preg->state.index]))
+	if (ft_isdigit(pattern[preg->state.index]) && !(preg->cflags & FT_REG_EXTENDED))
 		return back_ref_handler(preg, pattern);
 	else
 		return regular_handler(preg, pattern);
@@ -250,14 +287,6 @@ int equivalence_class_handler(ft_regex_t *restrict preg, const char *restrict pa
 	return 0;
 }
 
-int invert_bracket_handler(ft_regex_t *restrict preg, const char *restrict pattern)
-{
-	(void)pattern;
-	preg->state.current->invert = true;
-	preg->state.index++;
-	return 0;
-}
-
 int char_range_handler(ft_regex_t *restrict preg, const char *restrict pattern)
 {
 	reg_node *last = ft_vector_back(&preg->state.current->sub);
@@ -276,11 +305,37 @@ int char_range_handler(ft_regex_t *restrict preg, const char *restrict pattern)
 	return 0;
 }
 
-
-
-int    ft_regcomp(ft_regex_t *restrict preg, const char *restrict pattern, int cflags)
+int	pipe_handler(ft_regex_t *restrict preg, const char *restrict pattern)
 {
-	preg->state.context = REG_FIRST;
+	if (!preg->state.current->parent || preg->state.current->parent->type != REG_PIPE)
+	{
+		reg_node *tmp = new_node(&preg->node_vec, (reg_node){.type = REG_PIPE, .parent = preg->state.current->parent});
+		if (ft_vector(ATOMIC_TYPE, &tmp->sub) != OK)
+			return FT_REG_ESPACE;
+		if (ft_vector_push_back(&tmp->sub, preg->state.current) != OK)
+			return FT_REG_ESPACE;
+		if (!preg->state.current->parent)
+			preg->root = tmp;
+		preg->state.current->parent = tmp;
+	}
+	reg_node *tmp = new_node(&preg->node_vec, (reg_node){.type = REG_SUB, .parent = preg->state.current});
+	if (ft_vector(ATOMIC_TYPE, &tmp->sub) != OK)
+		return FT_REG_ESPACE;
+	if (ft_vector_push_back(&preg->state.current->parent->sub, tmp) != OK)
+		return FT_REG_ESPACE;
+	preg->state.current = tmp;
+	preg->state.index++;
+	if (pattern[preg->state.index] == '^')
+	{
+		tmp->invert = true;
+		preg->state.index++;
+	}
+	return 0;
+}
+
+int	ft_regcomp(ft_regex_t *restrict preg, const char *restrict pattern, int cflags)
+{
+	preg->state.context = 0;
 	preg->state.current = NULL;
 	preg->state.index = 0;
 	preg->cflags = cflags;
@@ -288,6 +343,8 @@ int    ft_regcomp(ft_regex_t *restrict preg, const char *restrict pattern, int c
 		ft_vector(ATOMIC_TYPE, &preg->sub_vec) != OK)
 		return FT_REG_ESPACE;
 
+	if (cflags & FT_REG_EXTENDED)
+		preg->state.context &= REG_ERE;
 	// init root:
 	if (!(preg->root = new_node(&preg->node_vec, (reg_node){.type = REG_SUB, .parent = NULL})) ||
 		(ft_vector(ATOMIC_TYPE, &preg->root->sub) != OK) ||
@@ -300,11 +357,9 @@ int    ft_regcomp(ft_regex_t *restrict preg, const char *restrict pattern, int c
 	{
 		int tmp = 0;
 		// update context:
-		if (preg->state.context & REG_FIRST_IN_BRACKET && preg->state.current->sub.size > 0)
-			preg->state.context &= ~REG_FIRST_IN_BRACKET;
-		if (ft_strlen(pattern + preg->state.index) == 1) // TODO: replace strlen by wcslen
-			preg->state.context |= REG_LAST;
-		if (preg->state.index)
+		if ((preg->state.current->type == REG_SUB || preg->state.current->type == REG_BRACKET) && !preg->state.current->sub.size)
+			preg->state.context |= REG_FIRST;
+		else
 			preg->state.context &= ~REG_FIRST;
 		// search in handler_map:
 		for (size_t j = 0; j < STATIC_ARRAY_SIZE(handler_map); j++)
@@ -319,6 +374,7 @@ int    ft_regcomp(ft_regex_t *restrict preg, const char *restrict pattern, int c
 		if (tmp)
 			return tmp;
 	}
+	preg->re_nsub = preg->sub_vec.size - 1;
 	if (preg->state.context & REG_ESCAPED)
 		return FT_REG_EESCAPE;
 	if (preg->state.context & REG_IN_BRACKET)

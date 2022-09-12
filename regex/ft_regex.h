@@ -48,6 +48,8 @@ enum {
 	FT_REG_ICASE = 2, // Ignore case in match (see XBD Regular Expressions).
 	FT_REG_NOSUB = 4, // Report only success/fail in regexec().
 	FT_REG_NEWLINE = 8, // Change the handling of <newline> characters, as described in the text.
+	FT_REG_NOTBOL = 16, // Change the handling of <newline> characters, as described in the text.
+	FT_REG_NOTEOL = 32, // Change the handling of <newline> characters, as described in the text.
 };
 
 int    ft_regcomp(ft_regex_t *restrict, const char *restrict, int);
