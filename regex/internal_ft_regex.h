@@ -6,10 +6,10 @@
 
 typedef enum {
 	REG_FIRST = 1,
-	REG_LAST = 2,
 	REG_ESCAPED = 4,
 	REG_IN_BRACKET = 8,
-	REG_FIRST_IN_BRACKET = 16,
+//	REG_FIRST_IN_BRACKET = 16,
+	REG_ERE = 32,
 //	REG_REPEATABLE = 16,
 }	reg_context;
 
@@ -25,7 +25,8 @@ typedef enum {
 	REG_COLLATING_ELEMENT,
 	REG_CLASS,
 	REG_RANGE,
-	REG_BACK_REF
+	REG_BACK_REF,
+	REG_PIPE,
 }	reg_token_type;
 
 typedef struct reg_node {
@@ -68,6 +69,8 @@ typedef int (*reg_handler)(ft_regex_t *restrict preg, const char *restrict patte
 int	dot_handler( ft_regex_t *restrict preg, const char *restrict pattern);
 int	regular_handler( ft_regex_t *restrict preg, const char *restrict pattern);
 int	asterisk_handler( ft_regex_t *restrict preg, const char *restrict pattern);
+int question_mark_handler(ft_regex_t *restrict preg, const char *restrict pattern);
+int plus_handler(ft_regex_t *restrict preg, const char *restrict pattern);
 int	open_bracket_handler( ft_regex_t *restrict preg, const char *restrict pattern);
 int	close_bracket_handler( ft_regex_t *restrict preg, const char *restrict pattern);
 int	end_handler( ft_regex_t *restrict preg, const char *restrict pattern);
@@ -76,13 +79,12 @@ int	slash_handler( ft_regex_t *restrict preg, const char *restrict pattern);
 int	equivalence_class_handler( ft_regex_t *restrict preg, const char *restrict pattern);
 int	collating_element_handler( ft_regex_t *restrict preg, const char *restrict pattern);
 int	char_class_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int invert_bracket_handler( ft_regex_t *restrict preg, const char *restrict pattern);
 int range_repeat_handler(ft_regex_t *restrict preg, const char *restrict pattern);
 int open_subexpr_handler( ft_regex_t *restrict preg, const char *restrict pattern);
 int close_subexpr_handler( ft_regex_t *restrict preg, const char *restrict pattern);
 int escaped_regular_handler(ft_regex_t *restrict preg, const char *restrict pattern);
 int char_range_handler(ft_regex_t *restrict preg, const char *restrict pattern);
-
+int	pipe_handler(ft_regex_t *restrict preg, const char *restrict pattern);
 
 
 // all condition in mask must be verified and all condition in not_mask must NOT be verified
@@ -90,16 +92,21 @@ const static struct {char *str; reg_handler handler; int mask; int not_mask;} ha
 	{"[=", &equivalence_class_handler, REG_IN_BRACKET			, 0},
 	{"[.", &collating_element_handler, REG_IN_BRACKET			, 0},
 	{"[:", &char_class_handler,        REG_IN_BRACKET			, 0},
-	{"\\{", &range_repeat_handler,     0						, REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
+	{"\\{", &range_repeat_handler,     0						, REG_ERE | REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
+	{"\\)", &close_subexpr_handler,    0						, REG_ERE | REG_ESCAPED | REG_IN_BRACKET},
+	{"\\(", &open_subexpr_handler,     0						, REG_ERE | REG_ESCAPED | REG_IN_BRACKET},
+	{"|", &pipe_handler,   	           REG_ERE					, REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
+	{"{", &range_repeat_handler,       REG_ERE					, REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
 	{"*", &asterisk_handler,           0						, REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
+	{"+", &plus_handler,          	   REG_ERE					, REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
+	{"?", &question_mark_handler,      REG_ERE					, REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
 	{".", &dot_handler,                0						, REG_ESCAPED | REG_IN_BRACKET},
-	{"\\(", &open_subexpr_handler,     0						, REG_ESCAPED | REG_IN_BRACKET},
-	{"\\)", &close_subexpr_handler,    0						, REG_ESCAPED | REG_IN_BRACKET},
+	{"(", &open_subexpr_handler,       REG_ERE					, REG_ESCAPED | REG_IN_BRACKET},
+	{")", &close_subexpr_handler,      REG_ERE					, REG_ESCAPED | REG_IN_BRACKET},
 	{"[", &open_bracket_handler,       0						, REG_ESCAPED | REG_IN_BRACKET},
-	{"]", &close_bracket_handler,      REG_IN_BRACKET			, REG_FIRST_IN_BRACKET},
-	{"^", &begin_handler,              REG_FIRST				, REG_IN_BRACKET | REG_ESCAPED},
-	{"^", &invert_bracket_handler,     REG_FIRST_IN_BRACKET		, 0},
-	{"$", &end_handler,                REG_LAST					, REG_IN_BRACKET | REG_ESCAPED},
+	{"]", &close_bracket_handler,      REG_IN_BRACKET			, REG_FIRST},
+	{"^", &begin_handler,              0						, REG_IN_BRACKET | REG_ESCAPED},
+	{"$", &end_handler,                0						, REG_IN_BRACKET | REG_ESCAPED},
 	{"\\", &slash_handler,             0						, REG_IN_BRACKET | REG_ESCAPED},
 	{NULL, &escaped_regular_handler,   REG_ESCAPED				, 0},
 	{NULL, &regular_handler, 0, 0},

@@ -15,13 +15,14 @@ int ft_getopt(int argc, char * const argv[], const char *optstring)
 	static bool	offset = false, has_arg = false;
 	static int ft_optwordind;
 
-	/*
-	if (ft_optind <= 1) { // reset
+
+	if (ft_optind < 1) { // reset
 		offset = false;
 		has_arg = false;
 		ft_optwordind = 0;
+		if (ft_optind == 0)
+			ft_optind = 1;
 	}
-	 */
 	ft_optarg = NULL;
 	while (true) {
 		if (ft_optind >= argc) // no more argv
