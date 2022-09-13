@@ -1,13 +1,17 @@
 #ifndef LIBFT_FT_STDIO_H
-#define LIBFT_FT_STDIO_H
-#include "../libft.h"
-#include <fcntl.h>
-#include <string.h>
-#define ft_EOF EOF
-#define BUF_REALLOC 10
-#define ft_stdin ((ft_FILE *)&stdio_files[0])
-#define ft_stdout ((ft_FILE *)&stdio_files[1])
-#define ft_stderr ((ft_FILE *)&stdio_files[2])
+# define LIBFT_FT_STDIO_H
+# include <fcntl.h>
+# include <string.h>
+# include <stdbool.h>
+# include <unistd.h>
+# include <stdlib.h>
+# define ft_EOF EOF
+# define BUF_REALLOC 10
+# define ft_stdin ((ft_FILE *)&stdio_files[0])
+# define ft_stdout ((ft_FILE *)&stdio_files[1])
+# define ft_stderr ((ft_FILE *)&stdio_files[2])
+
+# define ft_input_string_stream(s) (ft_FILE){.rbuf = s,.rbuflen = ft_strlen(s),.rbufcap = ft_strlen(s),.flags = FT_STDIO_ISTRINGSTREAM,}
 
 enum	ft_stdio_flags {
 	FT_STDIO_R = 1,
@@ -16,7 +20,8 @@ enum	ft_stdio_flags {
 	FT_STDIO_WR,
 	FT_STDIO_A,
 	FT_STDIO_AR,
-	FT_STDIO_STRINGSTREAM
+	FT_STDIO_STRINGSTREAM,
+	FT_STDIO_ISTRINGSTREAM
 };
 
 typedef struct
@@ -36,7 +41,8 @@ typedef struct	s_FILE
 	size_t				rbuflen;
 	size_t				rbufcap;
 	char				*wbuf;
-	ssize_t				wbuflen;
+	size_t				wbuflen;
+	size_t				wbufcap;
 	char				buf_flag;
 	bool				free_wbuf;
 	struct s_FILE		*prev;
@@ -83,9 +89,10 @@ int		ft_remove(const char *pathname);
 int		ft_rename(const char *oldpath, const char *newpath);
 
 int		ft_ungetc(int c, ft_FILE *stream);
+int		ft_ungets(const char *s, ft_FILE *stream);
 ssize_t  ft_getdelim(char **restrict lineptr, size_t *restrict n, int delim, ft_FILE *restrict stream);
 ssize_t  ft_getline(char **restrict lineptr, size_t *restrict n, ft_FILE *restrict stream);
 
 int		ft_setvbuf(ft_FILE *restrict stream, char *restrict buf, int type, size_t size);
 void	ft_setbuf(ft_FILE *restrict stream, char *restrict buf);
-#endif //LIBFT_FT_STDIO_H
+#endif

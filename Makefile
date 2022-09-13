@@ -50,9 +50,12 @@ SRCS    =	stdlib/ft_atoi.c \
 		other/ft_putnbr_fd.c	\
 		other/ft_putstr_fd.c	\
 		other/ft_split.c	\
+		string/ft_strcat.c	\
 		string/ft_strchr.c	\
+		string/ft_strcpy.c	\
 		string/ft_strdup.c	\
 		string/ft_strndup.c	\
+		string/ft_strstr.c	\
 		other/ft_strjoin.c	\
 		other/ft_append.c	\
 		other/ft_strlcat.c	\
@@ -113,9 +116,14 @@ SRCS    =	stdlib/ft_atoi.c \
         stdio/ft_setbuf.c \
         stdio/ft_setvbuf.c \
         stdio/ft_ungetc.c \
+        stdio/ft_ungets.c \
         stdio/globals.c \
 		stdio/printf/ft_vfprintf.c \
 		stdio/printf/ft_fprintf.c \
+		stdio/printf/ft_vsprintf.c \
+		stdio/printf/ft_sprintf.c \
+		stdio/printf/ft_vsnprintf.c \
+		stdio/printf/ft_snprintf.c \
 		stdio/printf/ft_vprintf.c \
 		stdio/printf/ft_printf.c \
 		stdio/printf/handle_i.c \
@@ -127,6 +135,17 @@ SRCS    =	stdlib/ft_atoi.c \
 		stdio/printf/handle_n.c \
 		stdio/printf/parsing.c \
 		stdio/printf/utils.c \
+		containers/list.c \
+		containers/btree.c \
+		containers/vector.c \
+		containers/string.c \
+		containers/buffer.c \
+		containers/iterator.c \
+		containers/oo_utils.c \
+		regex/ft_regcomp.c \
+		regex/ft_regexec.c \
+		regex/ft_regerror.c \
+		regex/ft_regfree.c
 
 
 
@@ -136,7 +155,7 @@ HEADER	=	libft.h
 
 NAME    =	libft.a
 
-CFLAGS  +=	-Wall -Werror -Wextra -g3
+CFLAGS  +=	-Wall -Werror -Wextra -g3 -D ENABLE_STRERROR # -fsanitize=address
 
 all	:	$(NAME)
 

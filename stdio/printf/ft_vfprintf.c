@@ -23,14 +23,19 @@ int		handle_conversion(ft_FILE *restrict stream, const char *restrict* format, v
 			break;
 		case 'c':
 			handle_char(&conv, arg);
+			break;
 		case 's':
 			handle_string(&conv, arg);
+			break;
 		case 'm':
 			handle_m(&conv, arg);
+			break;
 		case 'n':
 			handle_n(&conv, arg);
+			break;
 		case '%':
 			handle_percent(&conv, arg);
+			break;
 	}
 	return 1;
 }

@@ -24,6 +24,16 @@
 # include <sys/time.h>
 # include <math.h>
 # include <float.h>
+# include "stdio/printf/printf.h"
+
+typedef enum {
+	OK,
+	KO,
+	FATAL,
+}		status;
+
+// quick way to switch on a status variable
+# define SWITCH_STATUS(status, ok, ko, fatal) switch (status) {case OK:ok;break;case KO:ko;;break;case FATAL:fatal;break;default:break;}
 
 typedef struct s_list
 {
@@ -89,6 +99,7 @@ char	*ft_strdup(const char *s1);
 char	*ft_strndup(const char *s1, size_t n);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strstr(const char *haystack, const char *needle);
 char	*ft_append(char **str, char *to_append);
 char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split(char const *s, char c);

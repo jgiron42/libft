@@ -8,5 +8,6 @@ int ft_ungetc(int c, ft_FILE *stream) // bad implementation
 	*stream->rbuf = (unsigned char)c;
 	stream->rbuflen++;
 	stream->position.pos--;
+	stream->eof = false;
 	return 0;
 }

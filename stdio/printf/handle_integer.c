@@ -172,5 +172,7 @@ int	handle_integer(internal_printf *conv, va_list arg)
 		padding--;
 	}
 	*tmp = 0;
-	return ft_fwrite(final_buf, 1, size, conv->stream) ? 1 : -1;
+	int ret = ft_fwrite(final_buf, 1, size, conv->stream) ? 1 : -1;
+	free(final_buf);
+	return (ret);
 }
