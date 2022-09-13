@@ -156,7 +156,7 @@ Y fwrite
 Y getc
 Y getchar
 Y gets
-Y perror
+Y my
 N printf
 Y putc
 Y putchar
