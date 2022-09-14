@@ -244,6 +244,23 @@ data_type ft_vector_at(const container *this, size_t pos)
 			return 0;
 	}
 }
+
+data_type *ft_vector_at_ptr(const container *this, size_t pos)
+{
+	switch (this->vector.align)
+	{
+		case 1:
+			return ((data_type *)(this->vector.data + this->vector.align * pos));
+		case 2:
+			return ((data_type *)(this->vector.data + this->vector.align * pos));
+		case 4:
+			return ((data_type *)(this->vector.data + this->vector.align * pos));
+		case 8:
+			return ((data_type *)(this->vector.data + this->vector.align * pos));
+		default:
+			return 0;
+	}
+}
 data_type ft_vector_back(container *this)
 {
 	return ft_vector_at(this, this->size - 1);

@@ -140,6 +140,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		containers/vector.c \
 		containers/string.c \
 		containers/buffer.c \
+		containers/bheap.c \
 		containers/iterator.c \
 		containers/oo_utils.c \
 		regex/ft_regcomp.c \
