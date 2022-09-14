@@ -52,9 +52,9 @@ int		easy_way(const ft_regex_t *restrict r, char *s, regexec_t *conf)
 	begin:
 	if (parent->type == REG_SUB)
 	{
+//		printf("=> %zu %p\n", parent->sub_index, parent->sub.vector.data);
 		child = ft_vector_at(&parent->sub, parent->current);
 		match = true;
-//		printf("=> %zu\n", child->sub_index);
 	}
 	else if (parent->type == REG_REPEATED)
 	{
@@ -84,13 +84,13 @@ int		easy_way(const ft_regex_t *restrict r, char *s, regexec_t *conf)
 			interval_depth--;
 		case REG_REPEATED:
 			interval_depth++;
-			for (size_t i = 0; i < subexpr_depth; i++)
-				printf(" ");
+//			for (size_t i = 0; i < subexpr_depth; i++)
+//				printf(" ");
 			printf("%c %zu %zu %zu %zu\n", s[end], end, child->sub_index, subexpr_depth, interval_depth);
 			if (child->type == REG_SUB && child->sub_index < conf->nmatch && !(r->cflags & FT_REG_NOSUB)
 				&& ((subexpr_depth - 1 == 0) || (interval_depth == 0)))
 			{
-				printf("coucou\n");
+//				printf("coucou\n");
 				conf->pmatch[child->sub_index].tmp_so = end;
 			}
 			parent = child;
@@ -102,7 +102,7 @@ int		easy_way(const ft_regex_t *restrict r, char *s, regexec_t *conf)
 	}
 	end:
 	conf->end = end;
-	if (child->type == REG_SUB && child->sub_index < conf->nmatch && !(r->cflags & FT_REG_NOSUB))
+	if (match && child->type == REG_SUB && child->sub_index < conf->nmatch && !(r->cflags & FT_REG_NOSUB))
 		conf->pmatch[child->sub_index].tmp_eo = end;
 	if (!parent)
 	{
@@ -135,6 +135,7 @@ int		easy_way(const ft_regex_t *restrict r, char *s, regexec_t *conf)
 			match = true;
 			if (parent->current < parent->repeated.min)
 				parent->current = 0;
+			for (int i = 0; i < parent->sub_expr_dependency)
 			child = parent;
 			parent = parent->parent;
 			interval_depth--;
