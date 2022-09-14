@@ -65,8 +65,8 @@ char	**ft_split(char const *s, char c)
 
 	if (!s)
 		return (NULL);
-	ret = malloc(sizeof(char *) * (count_word((char *)s, c) + 1));
 	i = 0;
+	ret = malloc(sizeof(char *) * (count_word((char *)s, c) + 1));
 	if (!ret)
 		return (NULL);
 	while (*s)
@@ -83,6 +83,5 @@ char	**ft_split(char const *s, char c)
 		s = end;
 		i++;
 	}
-	ret[i] = NULL;
-	return (ret);
+	return (ret[i] = NULL, ret);
 }
