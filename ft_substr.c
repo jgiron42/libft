@@ -12,6 +12,20 @@
 
 #include "libft.h"
 
+char	*ft_strndup(const char *s1, size_t n)
+{
+	char	*dest;
+	size_t	len;
+
+	len = ft_strlen(s1);
+	if (len > n)
+		len = n;
+	dest = malloc(len + 1);
+	if (dest)
+		ft_strlcpy(dest, s1, len + 1);
+	return (dest);
+}
+
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	if (!s)
