@@ -105,7 +105,7 @@ int open_subexpr_handler(ft_regex_t *restrict preg, const char *restrict pattern
 	if (ft_vector_push_back(&preg->sub_vec, tmp) != OK)
 		return FT_REG_ESPACE;
 	preg->state.current = tmp;
-	preg->state.index += 2;
+	preg->state.index += 1 + !(preg->cflags & FT_REG_EXTENDED);
 	return 0;
 }
 
@@ -115,7 +115,7 @@ int close_subexpr_handler(ft_regex_t *restrict preg, const char *restrict patter
 	if (!preg->state.current->parent)
 		return FT_REG_EPAREN;
 	preg->state.current = preg->state.current->parent;
-	preg->state.index += 2;
+	preg->state.index += 1 + !(preg->cflags & FT_REG_EXTENDED);
 	return 0;
 }
 
@@ -322,7 +322,7 @@ int	ft_regcomp(ft_regex_t *restrict preg, const char *restrict pattern, int cfla
 		return FT_REG_ESPACE;
 
 	if (cflags & FT_REG_EXTENDED)
-		preg->state.context &= REG_ERE;
+		preg->state.context |= REG_ERE;
 	// init root:
 	if (!(preg->root = new_node(&preg->node_vec, (reg_node){.type = REG_SUB, .parent = NULL})) ||
 		(ft_vector(ATOMIC_TYPE, &preg->root->sub) != OK) ||
