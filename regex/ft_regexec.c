@@ -135,7 +135,6 @@ int		easy_way(const ft_regex_t *restrict r, char *s, regexec_t *conf)
 			match = true;
 			if (parent->current < parent->repeated.min)
 				parent->current = 0;
-			for (int i = 0; i < parent->sub_expr_dependency)
 			child = parent;
 			parent = parent->parent;
 			interval_depth--;
