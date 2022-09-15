@@ -4,39 +4,28 @@ status ft_vector_default(type_metadata metadata, void *dst)
 {
 	(void)metadata;
 	*(container *)dst = (container){
-		.type = FT_VECTOR,
-		.size = 0,
-		.vector = {
-				.data = NULL,
-				.capacity = 0,
-				.align = sizeof(data_type),
-		},
-		.begin = &ft_vector_begin,
-		.end = &ft_vector_end,
-		.clear = &ft_vector_clear,
-		.destroy = &ft_vector_destructor,
-		.copy = &ft_vector_copy,
+			.metadata = meta[FT_VECTOR],
+			.type = FT_VECTOR,
+			.size = 0,
+			.vector = {
+					.data = NULL,
+					.capacity = 0,
+					.align = sizeof(data_type),
+			},
+			.begin = &ft_vector_begin,
+			.end = &ft_vector_end,
+			.clear = &ft_vector_clear,
+			.destroy = &ft_vector_destructor,
+			.copy = &ft_vector_copy,
 	};
 	return OK;
 }
 
 status ft_vector(type_metadata meta, void *dst)
 {
-	*(container *)dst = (container){
-		.type = FT_VECTOR,
-		.value_type_metadata = meta,
-		.size = 0,
-		.vector = {
-				.data = NULL,
-				.capacity = 0,
-				.align = sizeof(data_type),
-		},
-		.begin = &ft_vector_begin,
-		.end = &ft_vector_end,
-		.clear = &ft_vector_clear,
-		.destroy = &ft_vector_destructor,
-		.copy = &ft_vector_copy,
-	};
+	if (ft_vector_default((type_metadata){}, dst) != OK)
+		return FATAL;
+	((container *)dst)->value_type_metadata = meta;
 	return OK;
 }
 
@@ -68,6 +57,12 @@ void	ft_vector_destructor(container *this)
 		free(this->vector.data);
 	this->vector.data = NULL;
 	this->vector.capacity = 0;
+}
+
+void	ft_vector_destructor_wrapper(type_metadata meta, void *container)
+{
+	(void)meta;
+	ft_vector_destructor(container);
 }
 
 iterator ft_vector_begin(container *this)
@@ -204,7 +199,6 @@ iterator	ft_vector_erase_one(container *this, iterator it)
 	it2.vector.current += this->vector.align;
 	return ft_vector_erase_range(this, it, it2);
 }
-
 
 status ft_vector_push_back(container *this, data_type data)
 {

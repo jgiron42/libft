@@ -69,6 +69,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		strings/ft_strcasecmp.c	\
 		string/ft_strrchr.c	\
 		other/ft_strtrim.c	\
+		other/cursed_abort.c	\
 		other/ft_substr.c	\
 		ctype/ft_tolower.c	\
 		ctype/ft_toupper.c \
@@ -103,6 +104,7 @@ SRCS    =	stdlib/ft_atoi.c \
         stdio/ft_getc.c \
         stdio/ft_getchar.c \
         stdio/ft_get_delim_buffered.c \
+        stdio/wrapped_read.c \
         stdio/ft_getdelim.c \
         stdio/ft_getline.c \
         stdio/ft_gets.c \
@@ -143,6 +145,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		containers/bheap.c \
 		containers/iterator.c \
 		containers/oo_utils.c \
+		containers/generic_interface.c \
 		regex/ft_regcomp.c \
 		regex/ft_regexec.c \
 		regex/ft_regerror.c \

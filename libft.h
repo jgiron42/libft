@@ -45,6 +45,7 @@ extern char *ft_optarg;
 extern int ft_optind, ft_opterr, ft_optopt;
 extern char **environ;
 
+void	cursed_abort(char *str) __attribute__((noreturn));
 char	*ft_strtok(char *str, const char *delim);
 size_t	ft_strcspn(const char *s, const char *reject);
 size_t	ft_strspn(const char *s, const char *accept);

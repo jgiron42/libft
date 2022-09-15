@@ -4,6 +4,7 @@ status ft_list_default(type_metadata metadata, void *dst)
 {
 	(void)metadata;
 	*(container *)dst = (container){
+			.metadata = meta[FT_LIST],
 			.type = FT_LIST,
 			.size = 0,
 			.list = {
@@ -21,11 +22,12 @@ status ft_list_default(type_metadata metadata, void *dst)
 	return OK;
 }
 
-status ft_list(type_metadata meta, void *dst)
+status ft_list(type_metadata m, void *dst)
 {
 	*(container *)dst = (container){
 			.type = FT_LIST,
-			.value_type_metadata = meta,
+			.metadata = meta[FT_LIST],
+			.value_type_metadata = m,
 			.size = 0,
 			.list = {
 					.past_the_end = {
@@ -56,6 +58,13 @@ void	ft_list_destructor(container *this)
 {
 	ft_list_clear(this);
 }
+
+void	ft_list_destructor_wrapper(type_metadata meta, void *container)
+{
+	(void)meta;
+	ft_list_destructor(container);
+}
+
 
 iterator ft_list_begin(container *this)
 {
