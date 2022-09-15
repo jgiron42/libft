@@ -9,6 +9,5 @@ int ft_ungets(const char *s, ft_FILE *stream) // bad implementation
 	ft_memcpy(stream->rbuf, s, len);
 	stream->rbuflen += len;
 	stream->position.pos -= len;
-	stream->eof = false;
 	return 0;
 }

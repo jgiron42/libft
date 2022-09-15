@@ -28,8 +28,10 @@ size_t	ft_fread(void *ptr, size_t size, size_t nmemb, ft_FILE *stream)
 		stream->eof = true;
 		return ret;
 	}
+	if (!toread)
+		return 0;
 	int tmp;
-	while (toread > 0 && (tmp = read(stream->fd, ptr, toread)) > 0)
+	while ((tmp = read(stream->fd, ptr, toread)) > 0)
 	{
 		ptr += tmp;
 		ret += tmp;
