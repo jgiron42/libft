@@ -6,6 +6,7 @@ status ft_btree_default(type_metadata metadata, void *dst)
 	(void)metadata;
 	*(container *)dst = (container){
 			.type = FT_BTREE,
+			.metadata = meta[FT_BTREE],
 			.size = 0,
 			.btree = {
 					.past_the_end = {
@@ -30,6 +31,7 @@ status ft_btree(type_metadata value, void *dst)
 {
 	*(container *)dst = (container){
 			.type = FT_BTREE,
+			.metadata = meta[FT_BTREE],
 			.value_type_metadata = value,
 			.size = 0,
 			.btree = {
@@ -158,6 +160,12 @@ void	ft_btree_destructor(container *this)
 	ft_btree_clear(this);
 }
 
+void	ft_btree_destructor_wrapper(type_metadata meta, void *container)
+{
+	(void)meta;
+	ft_btree_destructor(container);
+}
+
 iterator	ft_btree_find_recurse(container *this, btree_node *current, data_type key)
 {
 	if (!current)
@@ -244,10 +252,12 @@ iterator	ft_btree_insert_val(container *this, data_type val)
 	return ft_btree_insert_recurse(this, this->btree.past_the_end.left, val);
 }
 
-void ft_btree_erase_one(container *this, iterator *it)
+iterator ft_btree_erase_one(container *this, iterator it)
 {
-	btree_node *n = it->btree.current;
+	btree_node *n = it.btree.current;
 	btree_node **nptr = n->parent->left == n ? &n->parent->left : &n->parent->right;
+	iterator ret = it;
+	ft_btree_iterator_increment(&ret);
 	if (n->left && n->right)
 	{
 		btree_node *tmp = n->left;
@@ -279,15 +289,7 @@ void ft_btree_erase_one(container *this, iterator *it)
 	this->value_type_metadata.destructor(this->value_type_metadata, &n->data);
 	free(n);
 	this->size--;
-}
-
-void ft_btree_erase_range(container *this, iterator *first, iterator *last)
-{
-	while (ft_btree_iterator_compare(this->value_type_metadata, (void*)&first, (void *)&last))
-	{
-		ft_btree_erase_one(this, first);
-		ft_btree_iterator_increment((void*)&first);
-	}
+	return ret;
 }
 
 int	ft_btree_iterator_compare(type_metadata prop, void *l, void *r)
