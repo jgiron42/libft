@@ -27,7 +27,7 @@ size_t	ft_fwrite(const void *ptr, size_t size, size_t nmemb, ft_FILE *stream)
 	}
 	if (stream->wbuf && size * nmemb < stream->rbufcap - stream->wbuflen)
 	{
-		memcpy(stream->wbuf + stream->wbuflen, ptr, size * nmemb);
+		ft_memcpy(stream->wbuf + stream->wbuflen, ptr, size * nmemb);
 		stream->wbuflen += size * nmemb;
 		return (0);
 	}

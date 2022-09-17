@@ -55,7 +55,6 @@ SRCS    =	stdlib/ft_atoi.c \
 		string/ft_strcpy.c	\
 		string/ft_strdup.c	\
 		string/ft_strndup.c	\
-		string/ft_strstr.c	\
 		other/ft_strjoin.c	\
 		other/ft_append.c	\
 		other/ft_strlcat.c	\
@@ -69,7 +68,6 @@ SRCS    =	stdlib/ft_atoi.c \
 		strings/ft_strcasecmp.c	\
 		string/ft_strrchr.c	\
 		other/ft_strtrim.c	\
-		other/cursed_abort.c	\
 		other/ft_substr.c	\
 		ctype/ft_tolower.c	\
 		ctype/ft_toupper.c \
@@ -117,7 +115,6 @@ SRCS    =	stdlib/ft_atoi.c \
         stdio/ft_setbuf.c \
         stdio/ft_setvbuf.c \
         stdio/ft_ungetc.c \
-        stdio/ft_ungets.c \
         stdio/globals.c \
 		stdio/printf/ft_vfprintf.c \
 		stdio/printf/ft_fprintf.c \
@@ -140,26 +137,34 @@ SRCS    =	stdlib/ft_atoi.c \
 		containers/btree.c \
 		containers/vector.c \
 		containers/string.c \
-		containers/buffer.c \
-		containers/bheap.c \
 		containers/iterator.c \
-		containers/oo_utils.c \
-		regex/ft_regcomp.c \
-		regex/ft_regexec.c \
-		regex/ft_regerror.c \
-		regex/ft_regfree.c
-#		containers/generic_interface.c \
+		containers/oo_utils.c
+
+
+
+OBJS    :=	$(SRCS:%.c=%.o)
+
+HEADER	=	libft.h
 
 NAME    =	libft.a
 
-CFLAGS  +=	-Wall -Werror -Wextra -g3 -D ENABLE_STRERROR # -fsanitize=address
+CFLAGS  +=	-Wall -Werror -Wextra -g3 -D WHITELIST -D ENABLE_STRERROR
 
-SRCS_DIR = srcs
+all	:	$(NAME)
 
-OBJS_DIR = .objs
+$(NAME)	:	$(OBJS)
+		ar rc $(NAME) $(OBJS)
+		ranlib $(NAME)
 
-INCLUDE_DIR = includes
+.c.o:
+	$(CC) $(CFLAGS) -c $< -o $@
 
-CFLAGS = -Wall -Werror -Wextra -g3
+clean	:
+		rm -f $(OBJS) $(OBJS_BONUS)
 
-include makefile-template/lib.mk
+fclean	:	clean
+	        rm -f $(NAME) libft.so
+
+re	:	fclean all
+	
+.PHONY	:	clean fclean re all compil_objs compil_lib 
