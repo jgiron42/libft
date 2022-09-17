@@ -2,5 +2,5 @@
 
 int	ft_feof(ft_FILE *stream)
 {
-	return (stream->eof);
+	return (stream->eof && !stream->rbuflen);
 }

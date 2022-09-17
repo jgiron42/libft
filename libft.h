@@ -45,6 +45,7 @@ extern char *ft_optarg;
 extern int ft_optind, ft_opterr, ft_optopt;
 extern char **environ;
 
+void	cursed_abort(char *str) __attribute__((noreturn));
 char	*ft_strtok(char *str, const char *delim);
 size_t	ft_strcspn(const char *s, const char *reject);
 size_t	ft_strspn(const char *s, const char *accept);
@@ -99,6 +100,7 @@ char	*ft_strdup(const char *s1);
 char	*ft_strndup(const char *s1, size_t n);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strstr(const char *haystack, const char *needle);
 char	*ft_append(char **str, char *to_append);
 char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split(char const *s, char c);

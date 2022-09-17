@@ -4,39 +4,28 @@ status ft_vector_default(type_metadata metadata, void *dst)
 {
 	(void)metadata;
 	*(container *)dst = (container){
-		.type = FT_VECTOR,
-		.size = 0,
-		.vector = {
-				.data = NULL,
-				.capacity = 0,
-				.align = sizeof(data_type),
-		},
-		.begin = &ft_vector_begin,
-		.end = &ft_vector_end,
-		.clear = &ft_vector_clear,
-		.destroy = &ft_vector_destructor,
-		.copy = &ft_vector_copy,
+			.metadata = meta[FT_VECTOR],
+			.type = FT_VECTOR,
+			.size = 0,
+			.vector = {
+					.data = NULL,
+					.capacity = 0,
+					.align = sizeof(data_type),
+			},
+			.begin = &ft_vector_begin,
+			.end = &ft_vector_end,
+			.clear = &ft_vector_clear,
+			.destroy = &ft_vector_destructor,
+			.copy = &ft_vector_copy,
 	};
 	return OK;
 }
 
 status ft_vector(type_metadata meta, void *dst)
 {
-	*(container *)dst = (container){
-		.type = FT_VECTOR,
-		.value_type_metadata = meta,
-		.size = 0,
-		.vector = {
-				.data = NULL,
-				.capacity = 0,
-				.align = sizeof(data_type),
-		},
-		.begin = &ft_vector_begin,
-		.end = &ft_vector_end,
-		.clear = &ft_vector_clear,
-		.destroy = &ft_vector_destructor,
-		.copy = &ft_vector_copy,
-	};
+	if (ft_vector_default((type_metadata){}, dst) != OK)
+		return FATAL;
+	((container *)dst)->value_type_metadata = meta;
 	return OK;
 }
 
@@ -68,6 +57,12 @@ void	ft_vector_destructor(container *this)
 		free(this->vector.data);
 	this->vector.data = NULL;
 	this->vector.capacity = 0;
+}
+
+void	ft_vector_destructor_wrapper(type_metadata meta, void *container)
+{
+	(void)meta;
+	ft_vector_destructor(container);
 }
 
 iterator ft_vector_begin(container *this)
@@ -170,6 +165,20 @@ status	ft_vector_insert_range(container *this, iterator pos, iterator begin, ite
 	return (OK);
 }
 
+status	ft_vector_insert_count(container *this, iterator pos, data_type val, size_t count)
+{
+	status ret;
+	size_t offset = (pos.vector.current - this->vector.data) / this->vector.align;
+	if (this->vector.capacity - this->size < count && ft_vector_expand(this, count) != OK)
+		return FATAL;
+	ft_memmove((this->vector.data + (offset + count) * this->vector.align), this->vector.data + offset * this->vector.align, (this->size - offset) * this->vector.align);
+	for (size_t i = 0; i < count; i++)
+		if ((ret = pos.value_type_metadata.copy(pos.value_type_metadata, this->vector.data + (offset + i) * this->vector.align, &val)) != OK)
+			return ret;
+	this->size += count;
+	return (OK);
+}
+
 iterator	ft_vector_erase_range(container *this, iterator begin, iterator end)
 {
 	char *tmp = begin.vector.current;
@@ -190,7 +199,6 @@ iterator	ft_vector_erase_one(container *this, iterator it)
 	it2.vector.current += this->vector.align;
 	return ft_vector_erase_range(this, it, it2);
 }
-
 
 status ft_vector_push_back(container *this, data_type data)
 {
@@ -214,6 +222,49 @@ void ft_vector_pop_front(container *this)
 	ft_vector_erase_one(this, ft_vector_begin(this));
 }
 
+data_type ft_vector_at(const container *this, size_t pos)
+{
+	switch (this->vector.align)
+	{
+		case 1:
+			return (data_type)(uint64_t)*((uint8_t *)(this->vector.data + this->vector.align * pos));
+		case 2:
+			return (data_type)(uint64_t)*((uint16_t *)(this->vector.data + this->vector.align * pos));
+		case 4:
+			return (data_type)(uint64_t)*((uint32_t *)(this->vector.data + this->vector.align * pos));
+		case 8:
+			return (data_type)(uint64_t)*((uint64_t *)(this->vector.data + this->vector.align * pos));
+		default:
+			return 0;
+	}
+}
+
+data_type *ft_vector_at_ptr(const container *this, size_t pos)
+{
+	switch (this->vector.align)
+	{
+		case 1:
+			return ((data_type *)(this->vector.data + this->vector.align * pos));
+		case 2:
+			return ((data_type *)(this->vector.data + this->vector.align * pos));
+		case 4:
+			return ((data_type *)(this->vector.data + this->vector.align * pos));
+		case 8:
+			return ((data_type *)(this->vector.data + this->vector.align * pos));
+		default:
+			return 0;
+	}
+}
+data_type ft_vector_back(container *this)
+{
+	return ft_vector_at(this, this->size - 1);
+}
+
+data_type ft_vector_front(container *this)
+{
+	return ft_vector_at(this, 0);
+}
+
 int	ft_vector_iterator_compare(type_metadata prop, void *l, void *r)
 {
 	(void)prop;
@@ -226,7 +277,19 @@ int	ft_vector_iterator_compare(type_metadata prop, void *l, void *r)
 
 data_type ft_vector_iterator_dereference(void *it)
 {
-	return *(data_type *)(((iterator *)it)->vector.current);
+	switch (((iterator*)it)->vector.align)
+	{
+		case 1:
+			return (data_type)(uint64_t)*((uint8_t *)(((iterator *)it)->vector.current));
+		case 2:
+			return (data_type)(uint64_t)*((uint16_t *)(((iterator *)it)->vector.current));
+		case 4:
+			return (data_type)(uint64_t)*((uint32_t *)(((iterator *)it)->vector.current));
+		case 8:
+			return (data_type)(uint64_t)*((uint64_t *)(((iterator *)it)->vector.current));
+		default:
+			return 0;
+	}
 }
 
 void *ft_vector_iterator_increment(void *it)
