@@ -148,7 +148,7 @@ HEADER	=	libft.h
 
 NAME    =	libft.a
 
-CFLAGS  +=	-Wall -Werror -Wextra -g3 -D ENABLE_STRERROR
+CFLAGS  +=	-Wall -Werror -Wextra -g3 -D WHITELIST -D ENABLE_STRERROR
 
 all	:	$(NAME)
 

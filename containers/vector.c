@@ -47,7 +47,7 @@ status ft_vector_copy(struct s_type_metadata meta, void *dst, const void *src)
 	(*(container *)dst).vector.data = malloc(((container *)dst)->size * (*(container *)src).vector.align);
 	if (!(*(container *)dst).vector.data)
 		return FATAL;
-	memcpy((*(container *)dst).vector.data, (*(container *)src).vector.data, (*(container *)dst).size * (*(container *)src).vector.align);
+	ft_memcpy((*(container *)dst).vector.data, (*(container *)src).vector.data, (*(container *)dst).size * (*(container *)src).vector.align);
 	return OK;
 }
 

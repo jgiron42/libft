@@ -26,7 +26,7 @@ ssize_t  ft_getdelim(char **restrict lineptr, size_t *restrict n, int delim, ft_
 		tmp = malloc(read + FT_STDIO_GETDELIM_BUFFER_SIZE);
 		if (!tmp)
 			return -1;
-		memcpy(tmp, *lineptr, read + 1);
+		ft_memcpy(tmp, *lineptr, read + 1);
 		free(*lineptr);
 		*lineptr = tmp;
 	};
