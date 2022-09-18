@@ -9,14 +9,14 @@ int ft_optopt = 0;
  */
 int ft_getopt(int argc, char * const argv[], const char *optstring)
 {
-	bool plus_enabled = *optstring == '+';
+	bool posix = *optstring == '+';
 	bool minus_enabled = *optstring == '-';
-	bool colon_enabled = optstring[minus_enabled | plus_enabled] == ':';
+	bool colon_enabled = optstring[minus_enabled | posix] == ':';
 	static bool	offset = false, has_arg = false;
-	static int ft_optwordind;
+	static int ft_optwordind = 0;
 
-
-	if (ft_optind < 1) { // reset
+	posix |= ft_posixly_correct();
+	if (ft_optind <= 0) { // reset
 		offset = false;
 		has_arg = false;
 		ft_optwordind = 0;
@@ -26,10 +26,10 @@ int ft_getopt(int argc, char * const argv[], const char *optstring)
 	ft_optarg = NULL;
 	while (true) {
 		if (ft_optind >= argc) // no more argv
-			return (-1);
+			break;
 		if (!argv[ft_optind][ft_optwordind]) // end of argv
 		{
-			if (!(ft_posixly_correct() || plus_enabled)) { // GNU nice args permutations
+			if (!posix) { // GNU nice args permutations
 				int i = ft_optind;
 				while ((!offset && i > 1 + has_arg && argv[i - has_arg][0] == '-' && argv[i - 1 - has_arg][0] != '-') ||
 					   (offset && i > 2 + has_arg && argv[i - has_arg][0] == '-' && argv[i - 2 - has_arg][0] != '-')) {
@@ -56,20 +56,20 @@ int ft_getopt(int argc, char * const argv[], const char *optstring)
 		else if (ft_optwordind == 0) { // begin of argv
 			if (argv[ft_optind][0] == '-') { // is an option string
 				if (argv[ft_optind][1] == '-') // end of options
-					return (-1);
+					break;
 				else // parse next character
 					ft_optwordind++;
 			}
 			else // is a normal command argument
 			{
-				if (minus_enabled) // return as an arg for char code 1 option
+				if (posix) // posix version
+					break;
+				else if (minus_enabled) // return as an arg for char code 1 option
 				{
 					ft_optarg = argv[ft_optind];
 					ft_optwordind = (int)ft_strlen(argv[ft_optind]);
 					return (1);
 				}
-				else if (ft_posixly_correct() || plus_enabled) // posix version
-					return (-1);
 				else // GNU version
 					ft_optwordind = (int)ft_strlen(argv[ft_optind]);
 			}
@@ -118,4 +118,13 @@ int ft_getopt(int argc, char * const argv[], const char *optstring)
 			}
 		}
 	}
+	if (!posix && (ft_optind >= argc || ft_strcmp(argv[ft_optind], "--")))
+	{
+		if (ft_optind >= argc)
+			ft_optind = argc - 1;
+		while (ft_optind > 0 && argv[ft_optind][0] != '-')
+			ft_optind--;
+		ft_optind += 1 + offset;
+	}
+	return -1;
 }

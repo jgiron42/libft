@@ -104,7 +104,6 @@ SRCS    =	stdlib/ft_atoi.c \
         stdio/ft_getc.c \
         stdio/ft_getchar.c \
         stdio/ft_get_delim_buffered.c \
-        stdio/wrapped_read.c \
         stdio/ft_getdelim.c \
         stdio/ft_getline.c \
         stdio/ft_gets.c \
@@ -159,7 +158,7 @@ HEADER	=	libft.h
 
 NAME    =	libft.a
 
-CFLAGS  +=	-Wall -Werror -Wextra -g3 -D ENABLE_STRERROR # -fsanitize=address
+CFLAGS  +=	-Wall -Werror -Wextra -g3 -D WHITELIST -D ENABLE_STRERROR
 
 all	:	$(NAME)
 
