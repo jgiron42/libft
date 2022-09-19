@@ -8,6 +8,7 @@ status ft_btree_default(type_metadata metadata, void *dst)
 			.type = FT_BTREE,
 			.metadata = meta[FT_BTREE],
 			.size = 0,
+			.value_type_size = sizeof (data_type),
 			.btree = {
 					.past_the_end = {
 							.parent = NULL,
@@ -34,6 +35,7 @@ status ft_btree(type_metadata value, void *dst)
 			.metadata = meta[FT_BTREE],
 			.value_type_metadata = value,
 			.size = 0,
+			.value_type_size = sizeof (data_type),
 			.btree = {
 					.past_the_end = {
 							.parent = NULL,
@@ -81,7 +83,7 @@ iterator ft_btree_end(container *this)
 
 btree_node *deep_copy(container *this, const container *other, btree_node *n)
 {
-	btree_node *ret = malloc(sizeof (btree_node));
+	btree_node *ret = malloc(sizeof(btree_node) - sizeof(data_type) + this->value_type_size);
 	if (!ret)
 		return NULL;
 	*ret = *n;
@@ -150,6 +152,8 @@ void	ft_btree_clear(container *this)
 {
 	if (this->btree.past_the_end.right)
 		deep_clear(this, this->btree.past_the_end.right);
+	this->btree.first = &this->btree.past_the_end;
+	this->btree.last = &this->btree.past_the_end;
 	this->btree.past_the_end.left = NULL;
 	this->btree.past_the_end.right = NULL;
 	this->size = 0;
@@ -191,7 +195,7 @@ iterator	ft_btree_find(container *this, data_type key)
 iterator	ft_btree_insert_recurse(container *this, btree_node *current, data_type value)
 {
 	btree_node **dst;
-	int tmp = this->value_type_metadata.compare(this->value_type_metadata, &value, &current->data);
+	int tmp = this->value_type_metadata.compare(this->value_type_metadata, value, &current->data);
 	if (tmp < 0)
 	{
 		if (current->left)
@@ -206,17 +210,17 @@ iterator	ft_btree_insert_recurse(container *this, btree_node *current, data_type
 	}
 	else
 	{
-		if (this->value_type_metadata.assign(this->value_type_metadata, &current->data, &value) != OK)
+		if (this->value_type_metadata.assign(this->value_type_metadata, &current->data, value) != OK)
 			return (ft_btree_end(this));
 		iterator ret = ft_btree_begin(this);
 		ret.btree.current = current;
 		return ret;
 	}
-	*dst = malloc(sizeof(btree_node));
+	*dst = malloc(sizeof(btree_node) - sizeof(data_type) + this->value_type_size);
 	if (!*dst)
 		return (ft_btree_end(this));
-	ft_bzero(*dst, sizeof(btree_node));
-	if (this->value_type_metadata.copy(this->value_type_metadata, &(*dst)->data, &value) != OK)
+	ft_bzero(*dst, sizeof(btree_node) - sizeof(data_type) + this->value_type_size);
+	if (this->value_type_metadata.copy(this->value_type_metadata, &(*dst)->data, value) != OK)
 		return (ft_btree_end(this));
 	(*dst)->parent = current;
 	if (this->btree.first == current && dst == &current->left)
@@ -229,15 +233,15 @@ iterator	ft_btree_insert_recurse(container *this, btree_node *current, data_type
 	return ret;
 }
 
-iterator	ft_btree_insert_val(container *this, data_type val)
+iterator	ft_btree_insert_ptr(container *this, data_type *val)
 {
 	if (this->size == 0)
 	{
-		btree_node * new_node = malloc(sizeof(btree_node));
+		btree_node * new_node = malloc(sizeof(btree_node) - sizeof(data_type) + this->value_type_size);
 		if (!new_node)
 			return (ft_btree_end(this));
-		ft_bzero(new_node, sizeof(btree_node));
-		if (this->value_type_metadata.copy(this->value_type_metadata, &new_node->data, &val) != OK)
+		ft_bzero(new_node, sizeof(btree_node) - sizeof(data_type) + this->value_type_size);
+		if (this->value_type_metadata.copy(this->value_type_metadata, &new_node->data, val) != OK)
 			return (ft_btree_end(this));
 		new_node->parent = &this->btree.past_the_end;
 		this->btree.past_the_end.left = new_node;
@@ -250,6 +254,11 @@ iterator	ft_btree_insert_val(container *this, data_type val)
 		return ret;
 	}
 	return ft_btree_insert_recurse(this, this->btree.past_the_end.left, val);
+}
+
+iterator	ft_btree_insert_val(container *this, data_type val)
+{
+	return ft_btree_insert_ptr(this, &val);
 }
 
 iterator ft_btree_erase_one(container *this, iterator it)
@@ -301,6 +310,11 @@ int	ft_btree_iterator_compare(type_metadata prop, void *l, void *r)
 data_type ft_btree_iterator_dereference(void *it)
 {
 	return (((iterator *)it)->btree.current->data);
+}
+
+data_type *ft_btree_iterator_reference(void *it)
+{
+	return (&((iterator *)it)->btree.current->data);
 }
 
 void *ft_btree_iterator_increment(void *it)

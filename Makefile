@@ -43,6 +43,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		string/ft_memchr.c	\
 		string/ft_memcmp.c	\
 		string/ft_memcpy.c	\
+		string/ft_memswap.c	\
 		string/ft_memmove.c	\
 		string/ft_memset.c	\
 		string/ft_strcmp.c	\
