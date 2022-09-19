@@ -16,14 +16,20 @@ void atomic_destructor(type_metadata prop,  void *ptr)
 status atomic_copy(type_metadata prop,  void *dst, const void *src)
 {
 	(void)prop;
-	*(uint64_t *)dst = *(uint64_t *)src;
+	if (prop.size < 8)
+		*(uint64_t *)dst = *(uint64_t *)src;
+	else
+		ft_memcpy(dst, src, prop.size);
 	return OK;
 }
 
 status atomic_assign(type_metadata prop,  void *dst, const void *src)
 {
 	(void)prop;
-	*(uint64_t *)dst = *(uint64_t *)src;
+	if (prop.size < 8)
+		*(uint64_t *)dst = *(uint64_t *)src;
+	else
+		ft_memcpy(dst, src, prop.size);
 	return OK;
 }
 
@@ -105,7 +111,8 @@ status pointer_copy(type_metadata prop,  void *dst, const void *src)
 
 status pointer_assign(type_metadata prop,  void *dst, const void *src)
 {
-	ft_memcpy(*(void **)dst, *(void **)src, prop.size);
+	(void)prop;
+	*(data_type *)dst = *(data_type *)src;
 	return OK;
 }
 

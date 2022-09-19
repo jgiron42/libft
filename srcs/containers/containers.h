@@ -31,6 +31,7 @@ typedef struct s_type_metadata {
 	void*	(*add)(void* this, ssize_t to_add);
 	ssize_t (*diff)(void* l, void *r);
 	data_type 	(*dereference)(void* this);
+	data_type 	*(*reference)(void* this);
 	union {
 		struct {
 			struct s_iterator	(*begin)(struct s_container *);
@@ -42,6 +43,8 @@ typedef struct s_type_metadata {
 				struct {
 					status	(*push_front)(struct s_container *, data_type);
 					status	(*push_back)(struct s_container *, data_type);
+					status	(*push_front_ptr)(struct s_container *, data_type*);
+					status	(*push_back_ptr)(struct s_container *, data_type*);
 					void	(*pop_front)(struct s_container *);
 					void	(*pop_back)(struct s_container *);
 					status	(*insert_range)(struct s_container *this, struct s_iterator pos, struct s_iterator begin, struct s_iterator end);
@@ -60,7 +63,6 @@ typedef struct s_type_metadata {
 }	type_metadata;
 
 typedef struct s_btree_node {
-	data_type data;
 	struct s_btree_node *right;
 	struct s_btree_node *left;
 	struct s_btree_node *parent;
@@ -71,6 +73,7 @@ typedef struct s_btree_node {
 		}	color;
 		int balance_factor;
 	};
+	data_type data;
 }			btree_node;
 
 typedef struct s_list_node {
@@ -86,6 +89,7 @@ typedef struct s_container {
 	type_metadata	value_type_metadata;
 	type_metadata	metadata;
 	size_t			size;
+	int				value_type_size;
 	union {
 		struct {
 			char *data;
@@ -211,13 +215,18 @@ data_type *ft_vector_at_ptr(const container *this, size_t pos);
 data_type ft_vector_back(container *this);
 data_type ft_vector_front(container *this);
 
+status	ft_vector_insert_ptr(container *this, iterator pos, data_type *val);
+status ft_vector_push_back_ptr(container *this, data_type *data);
+status ft_vector_push_front_ptr(container *this, data_type *data);
+
 void *ft_vector_iterator_add(void *it, ssize_t to_add);
 void		*ft_vector_iterator_decrement(void *it);
 void		*ft_vector_iterator_increment(void *it);
 data_type	ft_vector_iterator_dereference(void *it);
+data_type	*ft_vector_iterator_reference(void *it);
 int			ft_vector_iterator_compare(type_metadata prop, void *l, void *r);
 
-#define FT_VECTOR_ITERATOR ((type_metadata){.constructor = &pointer_constructor, .destructor = &pointer_destructor, .copy = &pointer_copy, .assign = &pointer_assign, .compare = &ft_vector_iterator_compare, .increment = &ft_vector_iterator_increment, .decrement = &ft_vector_iterator_decrement, .dereference = &ft_vector_iterator_dereference, .add = &ft_vector_iterator_add, .size = sizeof( iterator )})
+#define FT_VECTOR_ITERATOR ((type_metadata){.constructor = &pointer_constructor, .destructor = &pointer_destructor, .copy = &pointer_copy, .assign = &pointer_assign, .compare = &ft_vector_iterator_compare, .increment = &ft_vector_iterator_increment, .decrement = &ft_vector_iterator_decrement, .dereference = &ft_vector_iterator_dereference, .reference = &ft_vector_iterator_reference, .add = &ft_vector_iterator_add, .size = sizeof( iterator )})
 
 // buffer
 status ft_buffer(void *dst, char *buf, size_t size, size_t cap);
@@ -270,20 +279,23 @@ iterator	ft_btree_begin(container *this);
 status		ft_btree(type_metadata value, void *dst);
 status		ft_btree_default(type_metadata metadata, void *dst);
 iterator	ft_btree_insert_val(container *this, data_type val);
+iterator	ft_btree_insert_ptr(container *this, data_type *val);
 iterator	ft_btree_erase_one(container *this, iterator it);
 
 int			ft_btree_iterator_compare(type_metadata prop, void *l, void *r);
 data_type	ft_btree_iterator_dereference(void *it);
+data_type	*ft_btree_iterator_reference(void *it);
 void		*ft_btree_iterator_increment(void *it);
 void		*ft_btree_iterator_decrement(void *it);
 data_type	ft_btree_iterator_get_key(void *it);
 
-#define FT_BTREE_ITERATOR ((type_metadata){.constructor = &pointer_constructor, .destructor = &pointer_destructor, .copy = &pointer_copy, .assign = &pointer_assign, .compare = &ft_btree_iterator_compare, .increment = &ft_btree_iterator_increment, .decrement = &ft_btree_iterator_decrement, .dereference = &ft_btree_iterator_dereference, .size = sizeof( iterator )})
+#define FT_BTREE_ITERATOR ((type_metadata){.constructor = &pointer_constructor, .destructor = &pointer_destructor, .copy = &pointer_copy, .assign = &pointer_assign, .compare = &ft_btree_iterator_compare, .increment = &ft_btree_iterator_increment, .decrement = &ft_btree_iterator_decrement, .dereference = &ft_btree_iterator_dereference, .reference = &ft_btree_iterator_reference, .size = sizeof( iterator )})
 
 status		ft_bheap(type_metadata meta, void *dst);
 data_type	ft_bheap_top(container *this);
 status		ft_bheap_push(container *this, data_type data);
-status		ft_bheap_pop(container *this);
+status		ft_bheap_push_ptr(container *this, data_type *data);
+void		ft_bheap_pop(container *this);
 
 static const type_metadata meta[] = {
 /*
@@ -301,8 +313,33 @@ static const type_metadata meta[] = {
 						.sequence = {
 								.push_front = &ft_vector_push_front,
 								.push_back = &ft_vector_push_back,
+								.push_front_ptr = &ft_vector_push_front_ptr,
+								.push_back_ptr = &ft_vector_push_back_ptr,
 								.pop_front = &ft_vector_pop_front,
 								.pop_back = &ft_vector_pop_back,
+								.insert_val	= &ft_vector_insert_val,
+								.insert_range = &ft_vector_insert_range,
+						},
+				},
+		},
+		[FT_BHEAP] = {
+				.interface_type = FT_SEQUENCE_CONTAINER,
+				.constructor = &ft_vector_default,
+				.destructor = &ft_vector_destructor_wrapper,
+				.copy = &ft_vector_copy,
+				.container = {
+						.begin = &ft_vector_begin,
+						.end = &ft_vector_end,
+						.clear = &ft_vector_clear,
+						.erase_one = &ft_vector_erase_one,
+						.erase_range = &ft_vector_erase_range,
+						.sequence = {
+								.push_front = &ft_bheap_push,
+								.push_back = &ft_bheap_push,
+								.push_front_ptr = &ft_vector_push_front_ptr,
+								.push_back_ptr = &ft_vector_push_back_ptr,
+								.pop_front = &ft_bheap_pop,
+								.pop_back = &ft_bheap_pop,
 								.insert_val	= &ft_vector_insert_val,
 								.insert_range = &ft_vector_insert_range,
 						},
