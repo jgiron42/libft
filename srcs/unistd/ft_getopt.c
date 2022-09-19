@@ -120,7 +120,7 @@ int ft_getopt(int argc, char * const argv[], const char *optstring)
 	{
 		if (ft_optind >= argc)
 			ft_optind = argc - 1;
-		while (ft_optind > 0 && argv[ft_optind][0] != '-')
+		while (ft_optind > 0 && (argv[ft_optind][0] != '-' || !argv[ft_optind][1]))
 			ft_optind--;
 		ft_optind += 1 + offset;
 	}

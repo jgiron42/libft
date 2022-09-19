@@ -34,7 +34,7 @@ status	ft_bheap_push(container *this, data_type data)
 		for (size_t i = this->size - 1; i > 0;) {
 			register int parent = BHEAP_PARENT(i);
 			if (this->value_type_metadata.compare(this->value_type_metadata, ft_vector_at_ptr(this, i),
-												  ft_vector_at_ptr(this, parent)) > 0) // if val[i] > val[parent]
+												  ft_vector_at_ptr(this, parent)) < 0) // if val[i] > val[parent]
 				bheap_swap(this, i, parent);
 			else
 				break;
@@ -54,9 +54,9 @@ status	ft_bheap_pop(container *this)
 	{
 		register size_t max = i;
 		if (BHEAP_RIGHT(i) < this->size && this->value_type_metadata.compare(this->value_type_metadata, ft_vector_at_ptr(this, BHEAP_RIGHT(i)),
-																				   ft_vector_at_ptr(this, i)) > 0) // right > current
+																				   ft_vector_at_ptr(this, i)) < 0) // right > current
 			max = BHEAP_RIGHT(i);
-		if (BHEAP_RIGHT(i) < this->size && this->value_type_metadata.compare(this->value_type_metadata, ft_vector_at_ptr(this, BHEAP_LEFT(i)), ft_vector_at_ptr(this, max)) > 0) // left > max(current, right)
+		if (BHEAP_RIGHT(i) < this->size && this->value_type_metadata.compare(this->value_type_metadata, ft_vector_at_ptr(this, BHEAP_LEFT(i)), ft_vector_at_ptr(this, max)) < 0) // left > max(current, right)
 			max = BHEAP_LEFT(i);
 		if (max == i)
 			break;
