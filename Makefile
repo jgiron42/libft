@@ -145,6 +145,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		containers/iterator.c \
 		containers/oo_utils.c \
 		containers/generic_interface.c \
+		algorithms/heap_sort.c \
 		regex/ft_regcomp.c \
 		regex/ft_regexec.c \
 		regex/ft_regerror.c \
