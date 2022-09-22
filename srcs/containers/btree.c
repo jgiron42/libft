@@ -240,7 +240,10 @@ iterator	ft_btree_insert_ptr(container *this, data_type *val)
 			return (ft_btree_end(this));
 		ft_bzero(new_node, sizeof(btree_node) - sizeof(data_type) + this->value_type_size);
 		if (this->value_type_metadata.copy(this->value_type_metadata, &new_node->data, val) != OK)
+		{
+			free(new_node);
 			return (ft_btree_end(this));
+		}
 		new_node->parent = &this->btree.past_the_end;
 		this->btree.past_the_end.left = new_node;
 		this->btree.past_the_end.right = new_node;

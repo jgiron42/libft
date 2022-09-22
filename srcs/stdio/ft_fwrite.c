@@ -27,7 +27,7 @@ size_t	ft_fwrite(const void *ptr, size_t size, size_t nmemb, ft_FILE *stream)
 		ft_memcpy(stream->wbuf + stream->wbuflen, ptr, tmp);
 		stream->wbuflen += tmp;
 		stream->position.pos += (ssize_t)tmp;
-		if (stream->buf_flag == _IOLBF && memchr(stream->wbuf, '\n', stream->wbuflen) && ft_fflush(stream))
+		if (stream->buf_flag == _IOLBF && ft_memchr(stream->wbuf, '\n', stream->wbuflen) && ft_fflush(stream))
 			return 0;
 		return (nmemb);
 	}
