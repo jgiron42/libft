@@ -210,8 +210,6 @@ iterator	ft_btree_insert_recurse(container *this, btree_node *current, data_type
 	}
 	else
 	{
-		if (this->value_type_metadata.assign(this->value_type_metadata, &current->data, value) != OK)
-			return (ft_btree_end(this));
 		iterator ret = ft_btree_begin(this);
 		ret.btree.current = current;
 		return ret;

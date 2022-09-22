@@ -23,11 +23,15 @@ int ft_fflush(ft_FILE *stream)
 	}
 	if (stream->flags != FT_STDIO_R)
 	{
-		if (stream->wbuf && (stream->position.pos = write(stream->fd, stream->wbuf, stream->wbuflen)) == -1)
+		ssize_t tmp = 0;
+		if (stream->wbuf && (tmp = write(stream->fd, stream->wbuf, stream->wbuflen)) == -1)
+		{
+			stream->error = true;
 			return ft_EOF;
-		free(stream->wbuf);
-		stream->wbuf = NULL;
-		stream->wbuflen = 0;
+		}
+		if ((size_t)tmp != stream->wbuflen)
+			ft_memmove(stream->wbuf, stream->wbuf + tmp, stream->wbuflen - tmp);
+		stream->wbuflen -= tmp;
 	}
 	if (stream->rbuf)
 	{

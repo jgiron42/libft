@@ -86,13 +86,11 @@ iterator	ft_find(container *this, data_type val)
 		return this->metadata.container.associative.find(this, val);
 	if (this->metadata.container.begin)
 	{
-		printf("{%zu}\n", this->size);
 		iterator it = this->metadata.container.begin(this);
 		iterator end = this->metadata.container.end(this);
 		data_type tmp =  it.metadata.dereference(&it);
 		while (it.metadata.compare(it.metadata, &it, &end) && it.value_type_metadata.compare(it.value_type_metadata, &tmp, &val))
 		{
-			printf("-> %d\n", (int)(intmax_t)it.metadata.dereference(&it));
 			it.metadata.increment(&it);
 			tmp =  it.metadata.dereference(&it);
 		}
