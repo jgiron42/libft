@@ -30,7 +30,7 @@ ssize_t  ft_getdelim(char **restrict lineptr, size_t *restrict n, int delim, ft_
 			return -1;
 		*n = read + FT_STDIO_GETDELIM_BUFFER_SIZE;
 		to_read = FT_STDIO_GETDELIM_BUFFER_SIZE;
-		memcpy(tmp, *lineptr, read + 1);
+		ft_memcpy(tmp, *lineptr, read + 1);
 		free(*lineptr);
 		*lineptr = tmp;
 	};

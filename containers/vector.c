@@ -125,8 +125,10 @@ status	ft_vector_insert_ptr(container *this, iterator pos, data_type *val)
 		return FATAL;
 	if (this->size * this->vector.align > offset)
 		ft_memmove(this->vector.data + offset + this->vector.align, this->vector.data + offset, (this->size - offset) * this->vector.align);
+	if (this->value_type_metadata.copy(this->value_type_metadata, this->vector.data + offset, val) != OK)
+		return FATAL;
 	this->size++;
-	return this->value_type_metadata.copy(this->value_type_metadata, this->vector.data + offset, val);
+	return OK;
 }
 
 status	ft_vector_insert_val(container *this, iterator pos, data_type val)
