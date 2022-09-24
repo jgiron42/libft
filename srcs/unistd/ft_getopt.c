@@ -27,17 +27,15 @@ int ft_getopt(int argc, char * const argv[], const char *optstring)
 			break;
 		if (!argv[ft_optind][ft_optwordind]) // end of argv
 		{
+			int i = ft_optind;
 			if (!posix) { // GNU nice args permutations
-				int i = ft_optind;
 				while ((!offset && i > 1 + has_arg && argv[i - has_arg][0] == '-' && argv[i - 1 - has_arg][0] != '-') ||
 					   (offset && i > 2 + has_arg && argv[i - has_arg][0] == '-' && argv[i - 2 - has_arg][0] != '-')) {
 					if (!has_arg) {
 						register char *tmp = argv[i - 1];
 						((char **) argv)[i - 1] = argv[i];
 						((char **) argv)[i] = tmp;
-					}
-					else
-					{
+					} else {
 						register char *tmp = argv[i - 2];
 						((char **) argv)[i - 2] = argv[i - 1];
 						((char **) argv)[i - 1] = argv[i];
@@ -48,13 +46,18 @@ int ft_getopt(int argc, char * const argv[], const char *optstring)
 				offset = has_arg;
 				has_arg = false;
 			}
+			if (!ft_strcmp(argv[i], "--"))
+			{
+				ft_optind = i + 1;
+				return -1;
+			}
 			ft_optind++;
 			ft_optwordind = 0;
 		}
 		else if (ft_optwordind == 0) { // begin of argv
 			if (argv[ft_optind][0] == '-') { // is an option string
 				if (argv[ft_optind][1] == '-') // end of options
-					break;
+					ft_optwordind += 2;
 				else // parse next character
 					ft_optwordind++;
 			}
