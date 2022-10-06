@@ -1,4 +1,4 @@
-#include "../../includes/libft.h"
+#include "libft.h"
 
 // since only allow the use of certain external functions (yeah even exit and raise),
 // this function does a good work at exiting the program!

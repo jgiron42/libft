@@ -158,7 +158,7 @@ SRCS_DIR = srcs
 
 OBJS_DIR = .objs
 
-INCLUDE_DIR = includes
+INCLUDE_DIR = .
 
 CFLAGS = -Wall -Werror -Wextra -g3
 

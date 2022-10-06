@@ -1,4 +1,4 @@
-#include "../../includes/libft.h"
+#include "libft.h"
 
 char *ft_strpbrk(const char *s, const char *accept)
 {

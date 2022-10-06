@@ -1,4 +1,4 @@
-#include "../../includes/libft.h"
+#include "libft.h"
 char *ft_optarg = NULL;
 int ft_optind = 1;
 int ft_opterr = 1;

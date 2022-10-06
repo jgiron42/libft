@@ -1,4 +1,4 @@
-#include "../../includes/libft.h"
+#include "libft.h"
 
 char	*ft_append(char **str, char *to_append)
 {

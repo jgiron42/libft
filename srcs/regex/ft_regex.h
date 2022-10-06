@@ -1,7 +1,7 @@
 #ifndef LIBFT_FT_REGEX_H
 #define LIBFT_FT_REGEX_H
 #include <sys/types.h>
-#include "../../includes/libft.h"
+#include "libft.h"
 #include "../containers/containers.h"
 #define FT_RE_DUP_MAX RE_DUP_MAX
 typedef size_t ft_regoff_t;
