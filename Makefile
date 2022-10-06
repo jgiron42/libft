@@ -104,7 +104,6 @@ SRCS    =	stdlib/ft_atoi.c \
         stdio/ft_getc.c \
         stdio/ft_getchar.c \
         stdio/ft_get_delim_buffered.c \
-        stdio/wrapped_read.c \
         stdio/ft_getdelim.c \
         stdio/ft_getline.c \
         stdio/ft_gets.c \
@@ -145,37 +144,22 @@ SRCS    =	stdlib/ft_atoi.c \
 		containers/bheap.c \
 		containers/iterator.c \
 		containers/oo_utils.c \
-		containers/generic_interface.c \
 		regex/ft_regcomp.c \
 		regex/ft_regexec.c \
 		regex/ft_regerror.c \
 		regex/ft_regfree.c
-
-
-
-OBJS    :=	$(SRCS:%.c=%.o)
-
-HEADER	=	libft.h
+#		containers/generic_interface.c \
 
 NAME    =	libft.a
 
 CFLAGS  +=	-Wall -Werror -Wextra -g3 -D ENABLE_STRERROR # -fsanitize=address
 
-all	:	$(NAME)
+SRCS_DIR = srcs
 
-$(NAME)	:	$(OBJS)
-		ar rc $(NAME) $(OBJS)
-		ranlib $(NAME)
+OBJS_DIR = .objs
 
-.c.o:
-	$(CC) $(CFLAGS) -c $< -o $@
+INCLUDE_DIR = includes
 
-clean	:
-		rm -f $(OBJS) $(OBJS_BONUS)
+CFLAGS = -Wall -Werror -Wextra -g3
 
-fclean	:	clean
-	        rm -f $(NAME) libft.so
-
-re	:	fclean all
-	
-.PHONY	:	clean fclean re all compil_objs compil_lib 
+include makefile-template/lib.mk

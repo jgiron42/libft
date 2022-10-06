@@ -1,0 +1,3 @@
+[submodule "makefile-template"]
+	path = makefile-template
+	url = git@github.com:jgiron42/makefile-template.git
