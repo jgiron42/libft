@@ -18,26 +18,30 @@ size_t	ft_fwrite(const void *ptr, size_t size, size_t nmemb, ft_FILE *stream)
 		}
 		return (tmp);
 	}
-	if (stream->wbuflen + tmp > stream->wbufcap)
-		ft_fflush(stream);
-	else
+	if (stream->buf_flag != _IONBF && stream->wbuflen + tmp > stream->wbufcap)
 	{
+		if (ft_fflush(stream))
+			return (0);
+	}
+	if (stream->buf_flag != _IONBF && stream->wbuflen + tmp <= stream->wbufcap) {
 		ft_memcpy(stream->wbuf + stream->wbuflen, ptr, tmp);
 		stream->wbuflen += tmp;
+		stream->position.pos += (ssize_t)tmp;
+		if (stream->buf_flag == _IOLBF && ft_memchr(stream->wbuf, '\n', stream->wbuflen) && ft_fflush(stream))
+			return 0;
+		return (nmemb);
 	}
-	if (stream->wbuf && size * nmemb < stream->rbufcap - stream->wbuflen)
+	else
 	{
-		memcpy(stream->wbuf + stream->wbuflen, ptr, size * nmemb);
-		stream->wbuflen += size * nmemb;
-		return (0);
-	}
-	ssize_t	ret = write(stream->fd, ptr, nmemb * size);
-	if (ret == -1)
-	{
-		stream->error = true;
-		return (0);
+		ssize_t	ret;
+		ret = write(stream->fd, ptr, nmemb * size);
+		if (ret == -1)
+		{
+			stream->error = true;
+			return (0);
+		}
+		stream->position.pos += ret;
+		return (ret / size);
 	}
 	// TODO: append
-	stream->position.pos += ret;
-	return (ret / nmemb);
 }

@@ -16,14 +16,20 @@ void atomic_destructor(type_metadata prop,  void *ptr)
 status atomic_copy(type_metadata prop,  void *dst, const void *src)
 {
 	(void)prop;
-	*(uint64_t *)dst = *(uint64_t *)src;
+	if (prop.size < 8)
+		*(uint64_t *)dst = *(uint64_t *)src;
+	else
+		ft_memcpy(dst, src, prop.size);
 	return OK;
 }
 
 status atomic_assign(type_metadata prop,  void *dst, const void *src)
 {
 	(void)prop;
-	*(uint64_t *)dst = *(uint64_t *)src;
+	if (prop.size < 8)
+		*(uint64_t *)dst = *(uint64_t *)src;
+	else
+		ft_memcpy(dst, src, prop.size);
 	return OK;
 }
 
@@ -83,7 +89,7 @@ status pointer_constructor(type_metadata prop,  void *ptr)
 	*(void **)ptr = malloc(prop.size);
 	if (!*(void **)ptr)
 		return (FATAL);
-	bzero(*(void **)ptr, prop.size);
+	ft_bzero(*(void **)ptr, prop.size);
 	return OK;
 }
 
@@ -99,13 +105,14 @@ status pointer_copy(type_metadata prop,  void *dst, const void *src)
 	*(void **)dst = malloc(prop.size);
 	if (!*(void **)dst)
 		return (FATAL);
-	memcpy(*(void **)dst, *(void **)src, prop.size);
+	ft_memcpy(*(void **)dst, *(void **)src, prop.size);
 	return OK;
 }
 
 status pointer_assign(type_metadata prop,  void *dst, const void *src)
 {
-	memcpy(*(void **)dst, *(void **)src, prop.size);
+	(void)prop;
+	*(data_type *)dst = *(data_type *)src;
 	return OK;
 }
 

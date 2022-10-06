@@ -21,11 +21,11 @@ status ft_vector_default(type_metadata metadata, void *dst)
 	return OK;
 }
 
-status ft_vector(type_metadata meta, void *dst)
+status ft_vector(type_metadata m, void *dst)
 {
 	if (ft_vector_default((type_metadata){}, dst) != OK)
 		return FATAL;
-	((container *)dst)->value_type_metadata = meta;
+	((container *)dst)->value_type_metadata = m;
 	return OK;
 }
 
@@ -36,7 +36,7 @@ status ft_vector_copy(struct s_type_metadata meta, void *dst, const void *src)
 	(*(container *)dst).vector.data = malloc(((container *)dst)->size * (*(container *)src).vector.align);
 	if (!(*(container *)dst).vector.data)
 		return FATAL;
-	memcpy((*(container *)dst).vector.data, (*(container *)src).vector.data, (*(container *)dst).size * (*(container *)src).vector.align);
+	ft_memcpy((*(container *)dst).vector.data, (*(container *)src).vector.data, (*(container *)dst).size * (*(container *)src).vector.align);
 	return OK;
 }
 
@@ -106,7 +106,7 @@ status	ft_vector_expand(container *dst, size_t count_more)
 	for (size_t i = 0; i < dst->size; i++)
 	{
 		int ret;
-		if ((ret = dst->value_type_metadata.copy(dst->value_type_metadata, new_ptr + i * dst->vector.align, dst->vector.data + i * dst->vector.align)) != OK)
+		if ((ret = dst->value_type_metadata.assign(dst->value_type_metadata, new_ptr + i * dst->vector.align, dst->vector.data + i * dst->vector.align)) != OK)
 		{
 			free(new_ptr);
 			return ret;
@@ -118,15 +118,22 @@ status	ft_vector_expand(container *dst, size_t count_more)
 	return (OK);
 }
 
-status	ft_vector_insert_val(container *this, iterator pos, data_type val)
+status	ft_vector_insert_ptr(container *this, iterator pos, data_type *val)
 {
 	size_t offset = pos.vector.current - this->vector.data;
 	if (this->vector.capacity < 1 + this->size && ft_vector_expand(this, 1) == FATAL)
 		return FATAL;
 	if (this->size * this->vector.align > offset)
 		ft_memmove(this->vector.data + offset + this->vector.align, this->vector.data + offset, (this->size - offset) * this->vector.align);
+	if (this->value_type_metadata.copy(this->value_type_metadata, this->vector.data + offset, val) != OK)
+		return FATAL;
 	this->size++;
-	return this->value_type_metadata.copy(this->value_type_metadata, this->vector.data + offset, &val);
+	return OK;
+}
+
+status	ft_vector_insert_val(container *this, iterator pos, data_type val)
+{
+	return ft_vector_insert_ptr(this, pos,  &val);
 }
 
 status	ft_vector_insert_range(container *this, iterator pos, iterator begin, iterator end)
@@ -137,7 +144,7 @@ status	ft_vector_insert_range(container *this, iterator pos, iterator begin, ite
 	{
 		while (begin.metadata.compare(begin.metadata ,&begin, &end))
 		{
-			data_type tmp;
+			data_type tmp; // todo: leaks
 			if ((ret = begin.value_type_metadata.copy(begin.value_type_metadata, &tmp, begin.metadata.dereference(&begin))) != OK)
 				return ret;
 			pos.vector.current = this->vector.data + offset * this->vector.align;
@@ -210,6 +217,17 @@ status ft_vector_push_front(container *this, data_type data)
 	return ft_vector_insert_val(this, ft_vector_begin(this), data);
 }
 
+
+status ft_vector_push_back_ptr(container *this, data_type *data)
+{
+	return ft_vector_insert_ptr(this, ft_vector_end(this), data);
+}
+
+status ft_vector_push_front_ptr(container *this, data_type *data)
+{
+	return ft_vector_insert_ptr(this, ft_vector_begin(this), data);
+}
+
 void ft_vector_pop_back(container *this)
 {
 	iterator it = ft_vector_end(this);
@@ -241,19 +259,7 @@ data_type ft_vector_at(const container *this, size_t pos)
 
 data_type *ft_vector_at_ptr(const container *this, size_t pos)
 {
-	switch (this->vector.align)
-	{
-		case 1:
-			return ((data_type *)(this->vector.data + this->vector.align * pos));
-		case 2:
-			return ((data_type *)(this->vector.data + this->vector.align * pos));
-		case 4:
-			return ((data_type *)(this->vector.data + this->vector.align * pos));
-		case 8:
-			return ((data_type *)(this->vector.data + this->vector.align * pos));
-		default:
-			return 0;
-	}
+	return ((data_type *)(this->vector.data + this->vector.align * pos));
 }
 data_type ft_vector_back(container *this)
 {
@@ -290,6 +296,11 @@ data_type ft_vector_iterator_dereference(void *it)
 		default:
 			return 0;
 	}
+}
+
+data_type *ft_vector_iterator_reference(void *it)
+{
+	return (data_type *)((iterator *)it)->vector.current;
 }
 
 void *ft_vector_iterator_increment(void *it)

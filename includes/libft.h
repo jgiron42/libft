@@ -32,8 +32,8 @@ typedef enum {
 	FATAL,
 }		status;
 
-// quick way to switch on a status variable
-# define SWITCH_STATUS(status, ok, ko, fatal) switch (status) {case OK:ok;break;case KO:ko;;break;case FATAL:fatal;break;default:break;}
+// quick way to switch on a program_status variable
+# define SWITCH_STATUS(status, ok, ko, fatal) switch (program_status) {case OK:ok;break;case KO:ko;;break;case FATAL:fatal;break;default:break;}
 
 typedef struct s_list
 {
@@ -68,6 +68,7 @@ int		ft_getopt(int argc, char * const argv[], const char *optstring);
 void	*ft_memset(void *b, int c, size_t len);
 void	ft_bzero(void *s, size_t n);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
+void	*ft_memswap(void *dst, const void *src, size_t n);
 void	*ft_memccpy(void *dst, const void *src, int c, size_t n);
 void	*ft_memmove(void *dst, const void *src, size_t len);
 void	*ft_memchr(const void *s, int c, size_t n);
