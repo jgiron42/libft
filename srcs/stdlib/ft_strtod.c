@@ -1,4 +1,4 @@
-#include "../../includes/libft.h"
+#include "libft.h"
 
 static int	from_hex(char c)
 {

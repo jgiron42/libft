@@ -1,4 +1,4 @@
-#include "../libft.h"
+#include "libft.h"
 char *ft_optarg = NULL;
 int ft_optind = 1;
 int ft_opterr = 1;
@@ -20,6 +20,8 @@ int ft_getopt(int argc, char * const argv[], const char *optstring)
 		offset = false;
 		has_arg = false;
 		ft_optwordind = 0;
+		if (ft_optind == 0)
+			ft_optind = 1;
 	}
 	ft_optarg = NULL;
 	while (true) {

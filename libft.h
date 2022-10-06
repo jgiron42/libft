@@ -24,7 +24,7 @@
 # include <sys/time.h>
 # include <math.h>
 # include <float.h>
-# include "../srcs/stdio/printf/printf.h"
+# include "srcs/stdio/printf/printf.h"
 
 typedef enum {
 	OK,

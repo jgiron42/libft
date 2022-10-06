@@ -1,4 +1,4 @@
-#include "../../includes/libft.h"
+#include "libft.h"
 
 void	*ft_lazy_realloc(void *ptr, size_t size)
 {

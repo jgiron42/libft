@@ -9,7 +9,7 @@
 /*   Updated: 2019/11/28 17:03:18 by jgiron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../includes/libft.h"
+#include "libft.h"
 
 int	ft_strcmp(const char *s1, const char *s2)
 {

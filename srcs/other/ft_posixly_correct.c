@@ -1,4 +1,4 @@
-#include "../../includes/libft.h"
+#include "libft.h"
 
 /**
  * check if the program is needed to be posixly correct with the POSIXLY_CORRECT and POSIX_ME_HARDER environment variables

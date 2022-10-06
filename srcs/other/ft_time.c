@@ -1,4 +1,4 @@
-#include "../../includes/libft.h"
+#include "libft.h"
 
 time_t	ft_time(time_t *tloc)
 {
