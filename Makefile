@@ -144,6 +144,8 @@ SRCS    =	stdlib/ft_atoi.c \
 		containers/bheap.c \
 		containers/iterator.c \
 		containers/oo_utils.c \
+		containers/generic_interface.c \
+		algorithms/heap_sort.c \
 		regex/ft_regcomp.c \
 		regex/ft_regexec.c \
 		regex/ft_regerror.c \
@@ -152,7 +154,7 @@ SRCS    =	stdlib/ft_atoi.c \
 
 NAME    =	libft.a
 
-CFLAGS  +=	-Wall -Werror -Wextra -g3 -D ENABLE_STRERROR # -fsanitize=address
+CFLAGS  +=	-Wall -Werror -Wextra -g3 -D WHITELIST -D ENABLE_STRERROR
 
 SRCS_DIR = srcs
 
