@@ -120,3 +120,40 @@ int	pointer_compare(type_metadata prop, void *l, void *r)
 {
 	return (ft_memcmp(*(void**)l, *(void **)r, prop.size));
 }
+
+status cstring_constructor(type_metadata prop,  void *ptr)
+{
+	(void)prop;
+	*(void **)ptr = ft_strdup("");
+	if (!*(void **)ptr)
+		return (FATAL);
+	return OK;
+}
+
+void cstring_destructor(type_metadata prop,  void *ptr)
+{
+	(void)prop;
+	free(*(void **)ptr);
+	*(void **)ptr = (data_type)0;
+}
+
+status cstring_copy(type_metadata prop,  void *dst, const void *src)
+{
+	(void)prop;
+	*(char **)dst = ft_strdup(*(char **)src);
+	if (!*(void **)dst)
+		return (FATAL);
+	return OK;
+}
+
+status cstring_assign(type_metadata prop,  void *dst, const void *src)
+{
+	(void)prop;
+	return cstring_copy(prop, dst, src);
+}
+
+int	cstring_compare(type_metadata prop, void *l, void *r)
+{
+	(void)prop;
+	return (ft_strcmp(*(char**)l, *(char **)r));
+}

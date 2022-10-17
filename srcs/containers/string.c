@@ -75,6 +75,20 @@ size_t ft_string_size(const container *src)
 	return src->size - 1;
 }
 
+status ft_string_push_back(container *this, data_type data)
+{
+	if (ft_vector_push_back(this, 0) != OK)
+		return FATAL;
+	this->vector.data[this->size - 2] = data;
+	return OK;
+}
+
+void ft_string_pop_back(container *this)
+{
+	ft_vector_pop_back(this);
+	this->vector.data[this->size - 1] = 0;
+}
+
 status	ft_string_append(container *this, char *str)
 {
 	size_t len = ft_strlen(str);
