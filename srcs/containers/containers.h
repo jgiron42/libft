@@ -158,10 +158,6 @@ iterator	ft_erase_range(container *this, iterator begin, iterator end);
 iterator	ft_find(container *this, data_type val);
 iterator	ft_erase_val(container *this, data_type val);
 
-// vector:
-
-status ft_vector(type_metadata type_metadata, void *dst);
-
 status	pointer_assign(type_metadata prop,  void *dst, const void *src);
 status	pointer_copy(type_metadata prop,  void *dst,  const void *src);
 void	pointer_destructor(type_metadata prop,  void *ptr);
@@ -169,6 +165,14 @@ status	pointer_constructor(type_metadata prop,  void *ptr);
 int	pointer_compare(type_metadata prop, void *l, void *r);
 
 #define POINTER_TYPE(pointed_type) ((type_metadata){.constructor = &pointer_constructor, .destructor = &pointer_destructor, .copy = &pointer_copy, .assign = &pointer_assign, .compare = &pointer_compare, .size = sizeof( pointed_type )})
+
+status	cstring_constructor(type_metadata prop,  void *ptr);
+void	cstring_destructor(type_metadata prop,  void *ptr);
+status	cstring_copy(type_metadata prop,  void *dst, const void *src);
+status	cstring_assign(type_metadata prop,  void *dst, const void *src);
+int		cstring_compare(type_metadata prop, void *l, void *r);
+
+#define CSTRING_TYPE ((type_metadata){.constructor = &cstring_constructor, .destructor = &cstring_destructor, .copy = &cstring_copy, .assign = &cstring_assign, .compare = &cstring_compare, .size = sizeof( char * )})
 
 status	atomic_assign(type_metadata prop,  void *dst, const void *src);
 status	atomic_copy(type_metadata prop,  void *dst,  const void *src);
@@ -190,6 +194,8 @@ size_t		distance(iterator begin, iterator end);
 iterator	ft_iterator_advance(iterator it, int n);
 
 // vector
+
+status ft_vector(type_metadata type_metadata, void *dst);
 data_type ft_vector_iterator_dereference(void *it);
 int	ft_vector_iterator_compare(type_metadata prop, void *l, void *r);
 void ft_vector_pop_front(container *this);
@@ -237,6 +243,9 @@ status ft_string(void *dst, char *str);
 char	*ft_string_c_str(container *this);
 status	ft_string_append(container *this, char *str);
 void	ft_string_clear(container *this);
+size_t ft_string_size(const container *src);
+status ft_string_push_back(container *this, data_type data);
+void ft_string_pop_back(container *this);
 
 status path_pop(container *this);
 status path_push(container *this, char *component);

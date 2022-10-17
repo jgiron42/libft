@@ -164,4 +164,4 @@ INCLUDE_DIR = .
 
 CFLAGS = -Wall -Werror -Wextra -g3
 
-include makefile-template/lib.mk
+include lib.mk
