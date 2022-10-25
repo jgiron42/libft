@@ -154,6 +154,8 @@ SRCS    =	stdlib/ft_atoi.c \
 
 NAME    =	libft.a
 
+CC		=	clang
+
 CFLAGS  +=	-Wall -Werror -Wextra -g3 -D WHITELIST -D ENABLE_STRERROR
 
 SRCS_DIR = srcs

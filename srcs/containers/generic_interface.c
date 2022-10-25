@@ -46,10 +46,13 @@ void ft_pop_back(container *this)
 	if (this->metadata.interface_type == FT_SEQUENCE_CONTAINER)
 	{
 		if (this->metadata.container.sequence.pop_back && this->metadata.container.sequence.pop_back != & ft_pop_back)
-			this->metadata.container.sequence.pop_back(this);
+			return this->metadata.container.sequence.pop_back(this);
 	}
 	else if (this->metadata.container.erase_one && this->metadata.container.end)
+	{
 		this->metadata.container.erase_one(this, this->metadata.container.end(this));
+		return;
+	}
 	cursed_abort("Can't pop_back on a container that doesn't implement pop_back or (erase_one and end)");
 }
 
@@ -58,10 +61,13 @@ void ft_pop_front(container *this)
 	if (this->metadata.interface_type == FT_SEQUENCE_CONTAINER)
 	{
 		if (this->metadata.container.sequence.pop_front && this->metadata.container.sequence.pop_front != & ft_pop_front)
-			this->metadata.container.sequence.pop_front(this);
+			return this->metadata.container.sequence.pop_front(this);
 	}
 	else if (this->metadata.container.erase_one && this->metadata.container.begin)
+	{
 		this->metadata.container.erase_one(this, this->metadata.container.begin(this));
+		return;
+	}
 	cursed_abort("Can't pop_front on a container that doesn't implement pop_front or (erase_one and begin)");
 }
 

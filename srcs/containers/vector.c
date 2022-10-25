@@ -124,7 +124,7 @@ status	ft_vector_insert_ptr(container *this, iterator pos, data_type *val)
 	if (this->vector.capacity < 1 + this->size && ft_vector_expand(this, 1) == FATAL)
 		return FATAL;
 	if (this->size * this->vector.align > offset)
-		ft_memmove(this->vector.data + offset + this->vector.align, this->vector.data + offset, (this->size - offset) * this->vector.align);
+		ft_memmove(this->vector.data + offset + this->vector.align, this->vector.data + offset, (this->size - (offset / this->vector.align)) * this->vector.align);
 	if (this->value_type_metadata.copy(this->value_type_metadata, this->vector.data + offset, val) != OK)
 		return FATAL;
 	this->size++;
@@ -145,7 +145,7 @@ status	ft_vector_insert_range(container *this, iterator pos, iterator begin, ite
 		while (begin.metadata.compare(begin.metadata ,&begin, &end))
 		{
 			data_type tmp; // todo: leaks
-			if ((ret = begin.value_type_metadata.copy(begin.value_type_metadata, &tmp, begin.metadata.dereference(&begin))) != OK)
+			if ((ret = begin.value_type_metadata.copy(begin.value_type_metadata, &tmp, ref_of(begin.metadata.dereference(&begin)))) != OK)
 				return ret;
 			pos.vector.current = this->vector.data + offset * this->vector.align;
 			if ((ret = ft_vector_insert_val(this, pos, tmp)) != OK)

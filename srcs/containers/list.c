@@ -44,9 +44,9 @@ status ft_list(type_metadata m, void *dst)
 	return OK;
 }
 
-status ft_list_copy(struct s_type_metadata meta, void *dst, const void *src)
+status ft_list_copy(struct s_type_metadata m, void *dst, const void *src)
 {
-	(void)meta;
+	(void)m;
 	ft_list(((container *)src)->value_type_metadata, dst);
 	ft_list_insert_range(dst,ft_list_begin((container *)dst), ft_list_begin((container *)src), ft_list_end((container *)src));
 	return OK;
@@ -59,9 +59,9 @@ void	ft_list_destructor(container *this)
 	ft_list_clear(this);
 }
 
-void	ft_list_destructor_wrapper(type_metadata meta, void *container)
+void	ft_list_destructor_wrapper(type_metadata m, void *container)
 {
-	(void)meta;
+	(void)m;
 	ft_list_destructor(container);
 }
 

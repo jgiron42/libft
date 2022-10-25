@@ -79,7 +79,7 @@ status ft_string_push_back(container *this, data_type data)
 {
 	if (ft_vector_push_back(this, 0) != OK)
 		return FATAL;
-	this->vector.data[this->size - 2] = data;
+	this->vector.data[this->size - 2] = (char)(intmax_t)data;
 	return OK;
 }
 
