@@ -33,9 +33,6 @@ typedef enum {
 	FATAL,
 }		status;
 
-// quick way to switch on a program_status variable
-# define SWITCH_STATUS(status, ok, ko, fatal) switch (program_status) {case OK:ok;break;case KO:ko;;break;case FATAL:fatal;break;default:break;}
-
 typedef struct s_list
 {
 	void			*content;
@@ -127,4 +124,5 @@ void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 # include "srcs/containers/containers.h"
+# include "srcs/macro.h"
 #endif
