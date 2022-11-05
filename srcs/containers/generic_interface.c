@@ -1,5 +1,5 @@
 #include "containers.h"
-
+#include "../algorithms/algorithms.h"
 
 status ft_push_back(container *this, data_type data)
 {
@@ -121,4 +121,13 @@ iterator	ft_erase_val(container *this, data_type val)
 		return this->metadata.container.erase_one(this, it);
 	}
 	cursed_abort("Can't erase_val on a container that doesn't implement erase_val or erase_one");
+}
+
+int			ft_compare(container *l, container *r)
+{
+	if (l->metadata.compare)
+		return l->metadata.compare(l->metadata, l, r);
+	else if (l->metadata.container.begin)
+		return (ft_lexicographical_compare_three_way(l->metadata.container.begin(l), l->metadata.container.end(l), r->metadata.container.begin(r), r->metadata.container.end(r)));
+	cursed_abort("Can't compare on a container that is not iterable");
 }
