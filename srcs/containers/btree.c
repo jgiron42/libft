@@ -1,11 +1,12 @@
 #include "containers.h"
-
+#include "../algorithms/algorithms.h"
 
 status ft_btree_default(type_metadata metadata, void *dst)
 {
 	(void)metadata;
 	*(container *)dst = (container){
 			.type = FT_BTREE,
+			.init = true,
 			.metadata = meta[FT_BTREE],
 			.size = 0,
 			.value_type_size = sizeof (data_type),
@@ -32,6 +33,7 @@ status ft_btree(type_metadata value, void *dst)
 {
 	*(container *)dst = (container){
 			.type = FT_BTREE,
+			.init = true,
 			.metadata = meta[FT_BTREE],
 			.value_type_metadata = value,
 			.size = 0,
@@ -128,8 +130,22 @@ status ft_btree_copy(struct s_type_metadata meta, void *dst, const void *src)
 		if (!((container *)dst)->btree.past_the_end.left)
 			return FATAL;
 		((container *)dst)->btree.past_the_end.right = ((container *)dst)->btree.past_the_end.left;
+		((container *)dst)->btree.past_the_end.right->parent = &((container *)dst)->btree.past_the_end;
+		if (((container *)src)->btree.past_the_end.right == ((container *)src)->btree.first)
+			((container *)dst)->btree.first = ((container *)dst)->btree.past_the_end.right;
+		if (((container *)src)->btree.past_the_end.right == ((container *)src)->btree.last)
+			((container *)dst)->btree.last = ((container *)dst)->btree.past_the_end.right;
 	}
 	return OK;
+}
+
+int		ft_btree_compare(type_metadata prop, void *l, void *r)
+{
+	(void)prop;
+	return ft_lexicographical_compare_three_way(
+		(*(container*)l).begin(((container*)l)), (*(container*)l).end(((container*)l)),
+		(*(container*)r).begin(((container*)r)), (*(container*)r).end(((container*)r))
+		);
 }
 
 void	deep_clear(container *this, btree_node *n)
@@ -231,6 +247,7 @@ iterator	ft_btree_insert_recurse(container *this, btree_node *current, data_type
 	return ret;
 }
 
+// find or insert the value or object pointed by ptr, if an error occur end is returned otherwise the iterator to the inserted value
 iterator	ft_btree_insert_ptr(container *this, data_type *val)
 {
 	if (this->size == 0)
@@ -257,9 +274,22 @@ iterator	ft_btree_insert_ptr(container *this, data_type *val)
 	return ft_btree_insert_recurse(this, this->btree.past_the_end.left, val);
 }
 
+// find or insert an atomic value, if an error occur end is returned otherwise the iterator to the inserted value
 iterator	ft_btree_insert_val(container *this, data_type val)
 {
 	return ft_btree_insert_ptr(this, &val);
+}
+
+status		ft_btree_insert_range(container *this, iterator begin, iterator end) {
+	iterator this_end = ft_btree_end(this);
+	while (begin.metadata.compare(begin.metadata, &begin, &end))
+	{
+		iterator tmp = ft_btree_insert_ptr(this, begin.metadata.reference(&begin));
+		if (!tmp.metadata.compare(tmp.metadata, &tmp, &this_end))
+			return FATAL;
+		begin.metadata.increment(&begin);
+	}
+	return OK;
 }
 
 iterator ft_btree_erase_one(container *this, iterator it)
@@ -292,10 +322,22 @@ iterator ft_btree_erase_one(container *this, iterator it)
 	}
 	else
 		*nptr = NULL;
+	if (nptr == &this->btree.past_the_end.left)
+		this->btree.past_the_end.right = this->btree.past_the_end.left;
 	if (n == this->btree.last)
-		this->btree.last = *nptr;
-	else if (n == this->btree.first)
-		this->btree.first = *nptr;
+	{
+		if (*nptr)
+			this->btree.last = *nptr;
+		else
+			this->btree.last = n->parent;
+	}
+	if (n == this->btree.first)
+	{
+		if (*nptr)
+			this->btree.first = *nptr;
+		else
+			this->btree.first = n->parent;
+	}
 	this->value_type_metadata.destructor(this->value_type_metadata, &n->data);
 	free(n);
 	this->size--;
@@ -310,12 +352,14 @@ int	ft_btree_iterator_compare(type_metadata prop, void *l, void *r)
 
 data_type ft_btree_iterator_dereference(void *it)
 {
-	return (((iterator *)it)->btree.current->data);
+	return (((iterator *)it)->btree
+			.current->data);
 }
 
 data_type *ft_btree_iterator_reference(void *it)
 {
-	return (&((iterator *)it)->btree.current->data);
+	return (&((iterator *)it)->btree
+			.current->data);
 }
 
 void *ft_btree_iterator_increment(void *it)

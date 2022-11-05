@@ -4,6 +4,7 @@ status ft_string(void *dst, char *str)
 {
 	*(container *)dst = (container){
 			.type = FT_VECTOR,
+			.init = true,
 			.value_type_metadata = BYTE_TYPE,
 			.size = ft_strlen(str) + 1,
 			.vector = {

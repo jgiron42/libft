@@ -86,6 +86,7 @@ struct s_iterator;
 
 typedef struct s_container {
 	container_type	type;
+	bool			init : 1;
 	type_metadata	value_type_metadata;
 	type_metadata	metadata;
 	size_t			size;
@@ -147,7 +148,7 @@ typedef struct s_iterator {
 #define ref_of(v) ((__typeof__(v)[1]){(v)})
 #define for_in(it, cont) for (iterator it = (cont).begin(&(cont)), end = (cont).end(&(cont)); (it).metadata.compare((it).metadata, (void *) &(it), (void *) &end); (it).metadata.increment(&(it)))
 // cursed macro but gives a cool way to iterate over a container (for_val_in(data_type val, cont) { ... })
-#define for_val_in(val, cont) for (iterator cursed_it = (cont).begin(&(cont)), end = (cont).end(&(cont)); (cursed_it).metadata.compare((cont).value_type_metadata, (void *) &(cursed_it), (void *) &end); (cursed_it).metadata.increment(&(cursed_it))) for(int cursed = 0; cursed==0;) for(val = cursed_it.metadata.dereference(&cursed_it);cursed==0;cursed++)
+#define for_val_in(val, cont) for (iterator cursed_it = (cont).begin(&(cont)), end = (cont).end(&(cont)); (cursed_it).metadata.compare((cursed_it).metadata, (void *) &(cursed_it), (void *) &end); (cursed_it).metadata.increment(&(cursed_it))) for(int cursed = 0; cursed==0;) for(val = cursed_it.metadata.dereference(&cursed_it);cursed==0;cursed++)
 
 // generic:
 
@@ -158,6 +159,7 @@ status	ft_push_back(container *this, data_type data);
 iterator	ft_erase_range(container *this, iterator begin, iterator end);
 iterator	ft_find(container *this, data_type val);
 iterator	ft_erase_val(container *this, data_type val);
+int			ft_compare(container *l, container *r);
 
 status	pointer_assign(type_metadata prop,  void *dst, const void *src);
 status	pointer_copy(type_metadata prop,  void *dst,  const void *src);
@@ -267,6 +269,8 @@ status		ft_list_insert_val(container *this, iterator pos, data_type val);
 status		ft_list_insert_range(container *this, iterator pos, iterator begin, iterator end);
 iterator	ft_list_erase_one(container *this, iterator it);
 iterator	ft_list_erase_range(container *this, iterator begin, iterator end);
+data_type	*ft_list_back(container *this);
+data_type	*ft_list_front(container *this);
 
 int			ft_list_iterator_compare(type_metadata prop, void *l, void *r);
 data_type	ft_list_iterator_dereference(void *it);
@@ -284,12 +288,14 @@ void		ft_btree_destructor(container *this);
 void		ft_btree_destructor_wrapper(type_metadata meta, void *container);
 void		ft_btree_clear(container *this);
 status		ft_btree_copy(struct s_type_metadata meta, void *dst, const void *src);
+int			ft_btree_compare(type_metadata prop, void *l, void *r);
 iterator	ft_btree_end(container *this);
 iterator	ft_btree_begin(container *this);
 status		ft_btree(type_metadata value, void *dst);
 status		ft_btree_default(type_metadata metadata, void *dst);
 iterator	ft_btree_insert_val(container *this, data_type val);
 iterator	ft_btree_insert_ptr(container *this, data_type *val);
+status		ft_btree_insert_range(container *this, iterator begin, iterator end);
 iterator	ft_btree_erase_one(container *this, iterator it);
 
 int			ft_btree_iterator_compare(type_metadata prop, void *l, void *r);
@@ -380,6 +386,7 @@ static const type_metadata meta[] = {
 				.constructor = &ft_btree_default,
 				.destructor = &ft_btree_destructor_wrapper,
 				.copy = &ft_btree_copy,
+				.compare = &ft_btree_compare,
 				.container = {
 						.begin = &ft_btree_begin,
 						.end = &ft_btree_end,

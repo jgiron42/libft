@@ -4,6 +4,7 @@ status ft_buffer(void *dst, char *buf, size_t size, size_t cap)
 {
 	*(container *)dst = (container){
 			.type = FT_VECTOR,
+			.init = true,
 			.value_type_metadata = BYTE_TYPE,
 			.size = size,
 			.vector = {
