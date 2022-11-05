@@ -3,9 +3,10 @@
 
 status ft_push_back(container *this, data_type data)
 {
-	if (this->metadata.interface_type == FT_SEQUENCE_CONTAINER && this->metadata.container.sequence.push_back != &ft_push_back)
+	if (this->metadata.interface_type == FT_SEQUENCE_CONTAINER)
 	{
-		if (this->metadata.container.sequence.push_back)
+		if (this->metadata.container.sequence.push_back &&
+			this->metadata.container.sequence.push_back != &ft_push_back)
 			return this->metadata.container.sequence.push_back(this, data);
 		else if (this->metadata.container.sequence.insert_val && this->metadata.container.end)
 			return this->metadata.container.sequence.insert_val(this, this->metadata.container.end(this), data);
