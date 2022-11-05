@@ -4,6 +4,7 @@ status ft_vector_default(type_metadata metadata, void *dst)
 {
 	(void)metadata;
 	*(container *)dst = (container){
+			.init = true,
 			.metadata = meta[FT_VECTOR],
 			.type = FT_VECTOR,
 			.size = 0,

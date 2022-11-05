@@ -5,6 +5,7 @@ status ft_list_default(type_metadata metadata, void *dst)
 	(void)metadata;
 	*(container *)dst = (container){
 			.metadata = meta[FT_LIST],
+			.init = true,
 			.type = FT_LIST,
 			.size = 0,
 			.list = {
@@ -19,6 +20,8 @@ status ft_list_default(type_metadata metadata, void *dst)
 			.destroy = &ft_list_destructor,
 			.copy = &ft_list_copy,
 	};
+	((container *)dst)->list.past_the_end.next = &((container *)dst)->list.past_the_end;
+	((container *)dst)->list.past_the_end.prev = &((container *)dst)->list.past_the_end;
 	return OK;
 }
 
@@ -26,6 +29,7 @@ status ft_list(type_metadata m, void *dst)
 {
 	*(container *)dst = (container){
 			.type = FT_LIST,
+			.init = true,
 			.metadata = meta[FT_LIST],
 			.value_type_metadata = m,
 			.size = 0,
@@ -41,6 +45,8 @@ status ft_list(type_metadata m, void *dst)
 			.destroy = &ft_list_destructor,
 			.copy = &ft_list_copy,
 	};
+	((container *)dst)->list.past_the_end.next = &((container *)dst)->list.past_the_end;
+	((container *)dst)->list.past_the_end.prev = &((container *)dst)->list.past_the_end;
 	return OK;
 }
 
