@@ -147,10 +147,17 @@ SRCS    =	stdlib/ft_atoi.c \
 		containers/generic_interface.c \
 		algorithms/heap_sort.c \
 		regex/ft_regcomp.c \
+		regex/parse_regexp.c \
+		regex/get_raw_graph.c \
+		regex/graph_utils.c \
+		regex/make_deterministic.c \
+		regex/powerset_construction.c \
+		regex/remove_epsilon.c \
 		regex/ft_regexec.c \
 		regex/ft_regerror.c \
-		regex/ft_regfree.c
-#		containers/generic_interface.c \
+		regex/ft_regfree.c \
+		containers/generic_interface.c \
+		algorithms/compare.c
 
 NAME    =	libft.a
 

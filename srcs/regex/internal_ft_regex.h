@@ -2,8 +2,10 @@
 #define LIBFT_INTERNAL_FT_REGEX_H
 #include "ft_regex.h"
 #include "wctype.h"
-# define STATIC_ARRAY_SIZE(array) (sizeof (array) / sizeof (*array))
-
+#include <malloc.h>
+#define FT_RE_DUP_INF (FT_RE_DUP_MAX + 1)
+#define FT_RE_BEGIN	256
+#define FT_RE_END	257
 typedef enum {
 	REG_FIRST = 1,
 	REG_ESCAPED = 4,
@@ -17,6 +19,7 @@ typedef enum {
 	REG_DOT,
 	REG_CHAR,
 	REG_REPEATED,
+	REG_KLEENE,
 	REG_BEGIN,
 	REG_END,
 	REG_BRACKET,
@@ -36,14 +39,15 @@ typedef struct reg_node {
 	size_t			sub_index;
 	ssize_t 		current;
 	union {
-		wchar_t _char;
+		unsigned char _char;
 		struct {
 			struct reg_node *tok;
 			ssize_t	min;
 			ssize_t	max;
 		} repeated;
-		container	sub;
-		wchar_t		equivalence_class;
+		struct reg_node *kleene;
+		container	sub; // container of pointer to reg_node
+		char		equivalence_class;
 		wctype_t 	char_class;
 		char		*collating_element;
 		struct {
@@ -71,52 +75,54 @@ typedef struct
 	int				eflags;
 }		regexec_t;
 
-typedef int (*reg_handler)(ft_regex_t *restrict preg, const char *restrict pattern);
+typedef struct FA_state {
+	int			id; // if -1 then the state is a subset
+	container	*subset; // used in powerset construction
+	bool		accept; // true if the state is an accept state
+	size_t		link_to; // the number of link to this node
+	union{
+		struct { // when the machine is non-deterministic their can be several transition for each symbol, that's why we store them in sets
+			container	*ascii[256 + 2]; // ascii + two for begin ('^') and end ('$')
+			container	*epsilon; // epsilon transitions
+		}		nd; // non-deterministic
+		struct { // when the machine is deterministic we store directly the only transition for each entry and there is no more epsilons
+			struct FA_state *ascii[256 + 2]; // ascii + two for begin ('^') and end ('$')
+		}		d; // deterministic
+	};
+}				FA_state;
 
-int	dot_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int	regular_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int	asterisk_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int question_mark_handler(ft_regex_t *restrict preg, const char *restrict pattern);
-int plus_handler(ft_regex_t *restrict preg, const char *restrict pattern);
-int	open_bracket_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int	close_bracket_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int	end_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int	begin_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int	slash_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int	equivalence_class_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int	collating_element_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int	char_class_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int range_repeat_handler(ft_regex_t *restrict preg, const char *restrict pattern);
-int open_subexpr_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int close_subexpr_handler( ft_regex_t *restrict preg, const char *restrict pattern);
-int escaped_regular_handler(ft_regex_t *restrict preg, const char *restrict pattern);
-int char_range_handler(ft_regex_t *restrict preg, const char *restrict pattern);
-int	pipe_handler(ft_regex_t *restrict preg, const char *restrict pattern);
+typedef struct {
+	struct {
+		int				context;
+		struct reg_node	*current;
+		size_t			index;
+	}					state;
+	reg_node	*root;
+	container	sub_vec; // contain link to all subexpressions
+	container	node_vec;
+	int			cflags;
+}	AST;
 
+typedef struct finite_automaton{
+	FA_state	*begin;
+	FA_state	*end;
+	bool		deterministic;
+	container	states;
+}			finite_automaton;
 
-// all condition in mask must be verified and all condition in not_mask must NOT be verified
-const static struct {char *str; reg_handler handler; int mask; int not_mask;} handler_map[] = {
-	{"[=", &equivalence_class_handler, REG_IN_BRACKET			, 0},
-	{"[.", &collating_element_handler, REG_IN_BRACKET			, 0},
-	{"[:", &char_class_handler,        REG_IN_BRACKET			, 0},
-	{"\\{", &range_repeat_handler,     0						, REG_ERE | REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
-	{"\\)", &close_subexpr_handler,    0						, REG_ERE | REG_ESCAPED | REG_IN_BRACKET},
-	{"\\(", &open_subexpr_handler,     0						, REG_ERE | REG_ESCAPED | REG_IN_BRACKET},
-	{"|", &pipe_handler,   	           REG_ERE					, REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
-	{"{", &range_repeat_handler,       REG_ERE					, REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
-	{"*", &asterisk_handler,           0						, REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
-	{"+", &plus_handler,          	   REG_ERE					, REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
-	{"?", &question_mark_handler,      REG_ERE					, REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
-	{".", &dot_handler,                0						, REG_ESCAPED | REG_IN_BRACKET},
-	{"(", &open_subexpr_handler,       REG_ERE					, REG_ESCAPED | REG_IN_BRACKET},
-	{")", &close_subexpr_handler,      REG_ERE					, REG_ESCAPED | REG_IN_BRACKET},
-	{"[", &open_bracket_handler,       0						, REG_ESCAPED | REG_IN_BRACKET},
-	{"]", &close_bracket_handler,      REG_IN_BRACKET			, REG_FIRST},
-	{"^", &begin_handler,              0						, REG_IN_BRACKET | REG_ESCAPED},
-	{"$", &end_handler,                0						, REG_IN_BRACKET | REG_ESCAPED},
-	{"\\", &slash_handler,             0						, REG_IN_BRACKET | REG_ESCAPED},
-	{NULL, &escaped_regular_handler,   REG_ESCAPED				, 0},
-	{NULL, &regular_handler, 0, 0},
-};
+int			parse_regexp(ft_regex_t *restrict r, AST *tree, const char *restrict pattern, int cflags);
+status		get_raw_graph(int cflags, AST *tree, finite_automaton *raw_graph);
+void		remove_unused_states(finite_automaton *raw_graph);
+void		destroy_transitions(FA_state state);
+void		destroy_automaton(finite_automaton *automaton);
+FA_state	*get_new_state(container *raw_graph);
+status		create_link(container **src, FA_state *dst);
+status		make_deterministic(finite_automaton *automaton);
+void		print_graph(finite_automaton *automaton);
+status		remove_all_epsilon(finite_automaton *raw_graph);
+void		destroy_tree(AST *tree);
+void		get_graphml(finite_automaton *automaton, char *name);
+int			state_compare(type_metadata prop, void *l, void *r);
+status		powerset_construction(finite_automaton *automaton);
 
 #endif

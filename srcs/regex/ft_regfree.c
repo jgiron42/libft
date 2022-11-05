@@ -2,7 +2,11 @@
 
 void   ft_regfree(ft_regex_t *r)
 {
-	ft_vector_destructor(&r->node_vec);
-	ft_vector_destructor(&r->sub_vec);
+	if (r->graph)
+	{
+		destroy_automaton(r->graph);
+		free(r->graph);
+		r->graph = NULL;
+	}
 	ft_bzero(r, sizeof (ft_regex_t));
 }

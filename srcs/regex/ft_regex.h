@@ -8,17 +8,10 @@ typedef size_t ft_regoff_t;
 
 typedef struct {
 	size_t				re_nsub; // Number of parenthesized subexpressions
-	struct reg_node		*root;
-	container			sub_vec; // contain link to all subexpressions
-	container			node_vec; // contain all the nodes, allocations are done by this vector
 	int					cflags;
 	bool				bol; // must match beginning of string
 	bool				eol; // must match end of string
-	struct {
-		int				context;
-		struct reg_node	*current;
-		size_t			index;
-	}					state; // must be in the regex_t in order to identify an error
+	struct finite_automaton	*graph;
 }		ft_regex_t;
 
 typedef struct {
@@ -28,7 +21,7 @@ typedef struct {
 	ft_regoff_t			tmp_eo;
 }		ft_regmatch_t;
 enum {
-	FT_REG_NOMATCH = 1,		// regexec() failed to match.
+	FT_REG_NOMATCH = 1,	// regexec() failed to match.
 	FT_REG_BADPAT,		// Invalid regular expression.
 	FT_REG_ECOLLATE,	// Invalid collating element referenced.
 	FT_REG_ECTYPE,		// Invalid character class type referenced.
