@@ -7,7 +7,7 @@
 #include "libft.h"
 
 // quick way to switch on a program_status variable
-# define SWITCH_STATUS(status, ok, ko, fatal) switch (program_status) {case OK:ok;break;case KO:ko;;break;case FATAL:fatal;break;default:break;}
+# define SWITCH_STATUS(status, ok, ko, fatal) switch (status) {case OK:ok;break;case KO:ko;;break;case FATAL:fatal;break;default:break;}
 
 // size of a static array
 # define ARRAY_SIZE(array) (sizeof(array) / sizeof (*(array)))
