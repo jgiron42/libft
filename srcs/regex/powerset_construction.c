@@ -18,6 +18,33 @@ status	get_targets(container *current, container *target_subset)
 	return OK;
 }
 
+status	get_all_transitions(FA_state *target)
+{
+	for_in(it, *target->subset) // adding each transitions from target_subset to target
+	{
+		FA_state *sub_state = it.metadata.dereference(&it);
+		if (!sub_state)
+			continue;
+//		printf("sub_state: %p\n", sub_state);
+		for (size_t i = 0; i < (sizeof(sub_state->nd.ascii) / sizeof(*sub_state->nd.ascii)); i++)
+		{
+			if (!sub_state->nd.ascii[i] || !sub_state->nd.ascii[i]->size)
+				continue;
+			for_in(it2, *sub_state->nd.ascii[i]) {
+
+				// do not insert link between states in the subset
+//				iterator it3 = ft_btree_find(target->subset, it2.metadata.dereference(&it2));
+//				if (it3.metadata.compare(it3.metadata, &it3, ref_of(target->subset->metadata.container.end(target->subset))))
+//					continue;
+
+				if (create_link(&target->nd.ascii[i], it2.metadata.dereference(&it2)) != OK)
+					return FATAL;
+			}
+		}
+	}
+	return OK;
+}
+
 FA_state *find_or_create_target(finite_automaton *automaton, container *target_subset, container *subset_map)
 {
 	if (target_subset->size == 1)
@@ -57,36 +84,14 @@ FA_state *find_or_create_target(finite_automaton *automaton, container *target_s
 		}
 		for_val_in(FA_state *sub_state, *target->subset)
 			target->accept |= sub_state->accept;
+		if (get_all_transitions(target) != OK)
+		{
+			free(target->subset);
+			free(target);
+			return NULL;
+		}
 		return target;
 	}
-}
-
-status	get_all_transitions(FA_state *target)
-{
-	for_in(it, *target->subset) // adding each transitions from target_subset to target
-	{
-		FA_state *sub_state = it.metadata.dereference(&it);
-		if (!sub_state)
-			continue;
-//		printf("sub_state: %p\n", sub_state);
-		for (size_t i = 0; i < (sizeof(sub_state->nd.ascii) / sizeof(*sub_state->nd.ascii)); i++)
-		{
-			if (!sub_state->nd.ascii[i] || !sub_state->nd.ascii[i]->size)
-				continue;
-			for_in(it2, *sub_state->nd.ascii[i]) {
-
-				// do not insert link between states in the subset
-//				iterator it3 = ft_btree_find(target->subset, it2.metadata.dereference(&it2));
-//				if (it3.metadata.compare(it3.metadata, &it3, ref_of(target->subset->metadata.container.end(target->subset))))
-//					continue;
-
-				if ((!target->nd.ascii[i] || !target->nd.ascii[i]->size) &&
-				create_link(&target->nd.ascii[i], it2.metadata.dereference(&it2)) != OK)
-					return FATAL;
-			}
-		}
-	}
-	return OK;
 }
 
 // this function rewrite the graph in order to make it deterministic using the powerset construction technic
@@ -133,8 +138,7 @@ status	powerset_construction(finite_automaton *automaton)
 			printf("%c: %zu\n", (char)i,state->nd.ascii[i]->size );
 #endif
 
-			if (create_link(&state->nd.ascii[i], target) != OK ||
-				get_all_transitions(target) != OK)
+			if (create_link(&state->nd.ascii[i], target) != OK)
 				goto error;
 #ifdef REG_DEBUG
 			printf("%c: %zu\n", (char)i,state->nd.ascii[i]->size );
