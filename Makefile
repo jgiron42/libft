@@ -156,6 +156,8 @@ SRCS    =	stdlib/ft_atoi.c \
 		regex/ft_regexec.c \
 		regex/ft_regerror.c \
 		regex/ft_regfree.c \
+		libgen/ft_basename.c \
+		libgen/ft_dirname.c \
 		containers/generic_interface.c \
 		algorithms/compare.c
 

@@ -125,4 +125,5 @@ void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 # include "srcs/containers/containers.h"
 # include "srcs/macro.h"
+# include "srcs/libgen/ft_libgen.h"
 #endif
