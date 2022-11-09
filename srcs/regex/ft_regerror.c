@@ -1,4 +1,5 @@
 #include "internal_ft_regex.h"
+#include "ft_stdio.h"
 
 static const char *error_array[] =
 {

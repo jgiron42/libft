@@ -1,4 +1,5 @@
 #include "internal_ft_regex.h"
+#include "ft_strings.h"
 
 void   ft_regfree(ft_regex_t *r)
 {

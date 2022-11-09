@@ -1,4 +1,5 @@
-#include "libft.h"
+#include "other.h"
+#include "ft_string.h"
 
 char	*ft_append(char **str, char *to_append)
 {

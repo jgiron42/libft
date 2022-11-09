@@ -1,4 +1,7 @@
 #include "parse_regexp.h"
+#include "ft_string.h"
+#include "ft_stdlib.h"
+#include "ft_ctype.h"
 
 reg_node *new_node(container *vec, reg_node  node)
 {

@@ -1,4 +1,6 @@
 #include "internal_printf.h"
+#include "ft_string.h"
+#include "ft_ctype.h"
 #define FT_PRINTF_MAX_NBR_BUF sizeof(uintmax_t) * 3
 // for diouxXp
 

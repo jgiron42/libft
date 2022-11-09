@@ -1,4 +1,5 @@
 #include "internal_ft_regex.h"
+#include "other.h"
 
 // change the data structure to the deterministic version (the graph must already be technically deterministic)
 status	make_deterministic(finite_automaton *automaton)

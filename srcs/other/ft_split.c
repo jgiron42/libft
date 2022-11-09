@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "other.h"
+#include <malloc.h>
+#include "ft_string.h"
 
 static char	*get_next_word(char *s, char c)
 {

@@ -1,4 +1,5 @@
 #include "containers.h"
+#include "ft_string.h"
 
 status ft_vector_default(type_metadata metadata, void *dst)
 {

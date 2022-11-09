@@ -1,4 +1,4 @@
-#include "libft.h"
+#include "ft_string.h"
 
 size_t	ft_strspn(const char *s, const char *accept)
 {

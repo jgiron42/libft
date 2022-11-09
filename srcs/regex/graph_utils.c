@@ -1,4 +1,10 @@
 #include "internal_ft_regex.h"
+#include "ft_string.h"
+#include "ft_stdlib.h"
+#include "ft_ctype.h"
+#include "ft_strings.h"
+#include "ft_stdio.h"
+#include "other.h"
 
 status	create_link(container **src, FA_state *dst)
 {

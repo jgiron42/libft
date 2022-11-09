@@ -1,4 +1,5 @@
 #include "ft_libgen.h"
+#include "ft_string.h"
 
 char  *ft_dirname(char *path)
 {

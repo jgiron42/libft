@@ -1,4 +1,8 @@
 #include "get_raw_graph.h"
+#include "ft_string.h"
+#include "ft_stdlib.h"
+#include "ft_ctype.h"
+#include <string.h>
 
 // Terminals:
 
@@ -14,7 +18,7 @@ status	get_graph_char(int cflags, reg_node *node, container *state_list, FA_stat
 status	get_graph_equivalence(int cflags, reg_node *node, container *state_list, FA_state *before, FA_state *after)
 {
 	(void)state_list;
-	for (int i = 0; i < 256; i++) {
+	for (int i = 0; i < 256; i++) { // todo: whitelist
 		if (((cflags & FT_REG_ICASE && !strcoll((char[2]) {(char) ft_toupper((char) i), 0}, (char[2]) {node->equivalence_class, 0})) ||
 			!strcoll((char[2]) {(char) ft_toupper((char) i), 0}, (char[2]) {node->equivalence_class, 0})) &&
 			create_link(&before->nd.ascii[i], after) != OK)

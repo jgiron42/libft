@@ -1,4 +1,6 @@
-#include "libft.h"
+#include "other.h"
+#include "ft_stdio.h"
+#include "ft_string.h"
 
 // since 42 specifically allow the use of certain external functions but not the other (yeah even exit and raise),
 // this function does a good work at exiting the program!

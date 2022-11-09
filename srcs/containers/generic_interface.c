@@ -1,5 +1,6 @@
 #include "containers.h"
-#include "../algorithms/algorithms.h"
+#include "includes/algorithms.h"
+#include "other.h"
 
 status ft_push_back(container *this, data_type data)
 {

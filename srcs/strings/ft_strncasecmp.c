@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_strings.h"
+#include "ft_ctype.h"
 
 int	ft_strncasecmp(const char *s1, const char *s2, size_t n)
 {

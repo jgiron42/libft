@@ -1,4 +1,5 @@
 #include "internal_ft_stdio.h"
+#include "ft_string.h"
 
 int      ft_fputs(const char *restrict s, ft_FILE *restrict stream) {
 	register size_t len = ft_strlen(s);

@@ -1,4 +1,6 @@
 #include "containers.h"
+#include "ft_string.h"
+#include "ft_strings.h"
 
 status atomic_constructor(type_metadata prop,  void *ptr)
 {

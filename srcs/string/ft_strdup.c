@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_string.h"
+#include <malloc.h>
 
 char	*ft_strdup(const char *s1)
 {

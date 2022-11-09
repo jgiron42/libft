@@ -1,4 +1,4 @@
-#include "libft.h"
+#include "ft_ctype.h"
 
 int	ft_isspace(int c)
 {

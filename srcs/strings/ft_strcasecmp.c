@@ -9,7 +9,9 @@
 /*   Updated: 2019/11/28 17:03:18 by jgiron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "libft.h"
+
+#include "ft_strings.h"
+#include "ft_ctype.h"
 
 int	ft_strcasecmp(const char *s1, const char *s2)
 {

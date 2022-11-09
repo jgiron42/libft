@@ -1,4 +1,5 @@
 #include "internal_ft_stdio.h"
+#include "ft_string.h"
 
 ssize_t  ft_getdelim(char **restrict lineptr, size_t *restrict n, int delim, ft_FILE *restrict stream) // TODO: handle einval
 {

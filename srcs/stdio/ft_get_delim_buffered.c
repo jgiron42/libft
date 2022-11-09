@@ -1,4 +1,5 @@
 #include "internal_ft_stdio.h"
+#include "ft_string.h"
 
 ssize_t	ft_get_delim_buffered(char *restrict s, size_t n, ft_FILE *restrict stream, int delim)
 {

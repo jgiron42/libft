@@ -1,4 +1,5 @@
 #include "internal_ft_regex.h"
+#include "ft_stdlib.h"
 
 int	ft_regcomp(ft_regex_t *restrict preg, const char *restrict pattern, int cflags)
 {
@@ -21,5 +22,8 @@ int	ft_regcomp(ft_regex_t *restrict preg, const char *restrict pattern, int cfla
 		ft_regfree(preg);
 		return FT_REG_ESPACE;
 	}
+#ifdef REG_DEBUG
+	printf("compilation finished, %zu states\n", preg->graph->states.size);
+#endif
 	return 0;
 }

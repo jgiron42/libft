@@ -1,4 +1,5 @@
-#include "libft.h"
+#include "other.h"
+#include <sys/time.h>
 
 time_t	ft_time(time_t *tloc)
 {

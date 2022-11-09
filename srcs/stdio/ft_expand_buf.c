@@ -1,4 +1,5 @@
 #include "internal_ft_stdio.h"
+#include "ft_string.h"
 
 int	ft_expand_buf(ft_FILE *stream, int n)
 {
