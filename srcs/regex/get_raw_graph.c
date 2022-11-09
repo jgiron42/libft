@@ -15,6 +15,7 @@ status	get_graph_char(int cflags, reg_node *node, container *state_list, FA_stat
 		return create_link(&before->nd.ascii[node->_char], after);
 }
 
+#if (defined(WHITELIST) && defined(FT_USE_STRCOLL))
 status	get_graph_equivalence(int cflags, reg_node *node, container *state_list, FA_state *before, FA_state *after)
 {
 	(void)state_list;
@@ -26,7 +27,9 @@ status	get_graph_equivalence(int cflags, reg_node *node, container *state_list, 
 	}
 	return OK;
 }
+#endif
 
+#if (defined(WHITELIST) && defined(FT_USE_ISWCTYPE))
 status	get_graph_class(int cflags, reg_node *node, container *state_list, FA_state *before, FA_state *after)
 {
 	(void)state_list;
@@ -44,6 +47,7 @@ status	get_graph_class(int cflags, reg_node *node, container *state_list, FA_sta
 				return FATAL;
 	return OK;
 }
+#endif
 
 status	get_graph_begin(int cflags, reg_node *node, container *state_list, FA_state *before, FA_state *after)
 {

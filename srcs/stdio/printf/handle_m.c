@@ -1,9 +1,10 @@
 #include "internal_printf.h"
+#include "ft_string.h"
 
 int	handle_m(internal_printf *conv, va_list arg)
 {
 	(void)arg;
-#ifdef ENABLE_STRERROR
+#if (defined(WHITELIST) && defined(FT_USE_STRERROR)) || (!defined(WHITELIST) && !defined(FT_USE_STRERROR))
 	char *str = strerror(errno);
 	size_t len = ft_strlen(str);
 	if (pad_left(conv, len) == -1)

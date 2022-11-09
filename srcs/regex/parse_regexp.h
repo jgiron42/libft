@@ -27,9 +27,13 @@ int	pipe_handler(AST *tree, const char *restrict pattern);
 
 // all condition in mask must be verified and all condition in not_mask must NOT be verified
 const static struct {char *str; reg_handler handler; int mask; int not_mask;} handler_map[] = {
+#if (defined(WHITELIST) && defined(FT_USE_STRCOLL))
 		{"[=", &equivalence_class_handler, REG_IN_BRACKET			, 0},
-		{"[.", &collating_element_handler, REG_IN_BRACKET			, 0},
+//		{"[.", &collating_element_handler, REG_IN_BRACKET			, 0},
+#endif
+#if (defined(WHITELIST) && defined(FT_USE_ISWCTYPE))  &&  (defined(WHITELIST) && defined(FT_USE_WCTYPE))
 		{"[:", &char_class_handler,        REG_IN_BRACKET			, 0},
+#endif
 		{"\\{", &range_repeat_handler,     0						, REG_ERE | REG_ESCAPED | REG_IN_BRACKET | REG_FIRST},
 		{"\\)", &close_subexpr_handler,    0						, REG_ERE | REG_ESCAPED | REG_IN_BRACKET},
 		{"\\(", &open_subexpr_handler,     0						, REG_ERE | REG_ESCAPED | REG_IN_BRACKET},
