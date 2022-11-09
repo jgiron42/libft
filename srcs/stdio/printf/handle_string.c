@@ -1,4 +1,5 @@
 #include "internal_printf.h"
+#include "ft_string.h"
 
 int	handle_string(internal_printf *conv, va_list arg)
 {

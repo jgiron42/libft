@@ -1,4 +1,5 @@
 #include "internal_ft_stdio.h"
+#include "ft_string.h"
 
 int ft_ungetc(int c, ft_FILE *stream) // bad implementation
 {

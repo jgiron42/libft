@@ -1,4 +1,6 @@
 #include "internal_ft_regex.h"
+#include "ft_stdlib.h"
+#include "other.h"
 
 status	get_targets(container *current, container *target_subset)
 {

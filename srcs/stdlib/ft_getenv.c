@@ -1,4 +1,7 @@
-#include "libft.h"
+#include "ft_stdlib.h"
+#include "ft_string.h"
+
+extern char **environ;
 
 char	*ft_getenv(const char *name)
 {

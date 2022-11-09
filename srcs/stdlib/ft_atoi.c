@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_stdlib.h"
 
 /**
  * POSIX and glibc compliant atoi (see: man 3 atoi)

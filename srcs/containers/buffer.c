@@ -1,4 +1,5 @@
 #include "containers.h"
+#include "ft_string.h"
 
 status ft_buffer(void *dst, char *buf, size_t size, size_t cap)
 {

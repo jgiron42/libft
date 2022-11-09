@@ -60,6 +60,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		other/ft_append.c	\
 		other/ft_strlcat.c	\
 		other/ft_strlcpy.c	\
+		other/ft_time.c		\
 		string/ft_strncpy.c	\
 		string/ft_strlen.c	\
 		other/ft_strmapi.c	\
@@ -174,6 +175,6 @@ SRCS_DIR = srcs
 
 OBJS_DIR = .objs
 
-INCLUDE_DIR = .
+INCLUDE_DIR = . includes
 
 include lib.mk

@@ -1,4 +1,5 @@
 #include "internal_ft_stdio.h"
+#include "ft_string.h"
 
 size_t	ft_fwrite(const void *ptr, size_t size, size_t nmemb, ft_FILE *stream)
 {

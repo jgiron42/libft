@@ -1,6 +1,5 @@
 #ifndef LIBFT_INTERNAL_PRINTF_H
 # define LIBFT_INTERNAL_PRINTF_H
-# include "printf.h"
 # include "../internal_ft_stdio.h"
 # include <stdarg.h>
 # include <stddef.h>

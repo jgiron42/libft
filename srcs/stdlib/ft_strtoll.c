@@ -1,4 +1,5 @@
-#include "libft.h"
+#include "ft_stdlib.h"
+#include "ft_ctype.h"
 
 static int	from_hex(char c)
 {

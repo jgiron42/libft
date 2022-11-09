@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "other.h"
+#include "ft_string.h"
+#include "malloc.h"
 
 static size_t	ft_nbrlen(int n)
 {

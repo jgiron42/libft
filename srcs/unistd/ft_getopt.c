@@ -1,4 +1,8 @@
-#include "libft.h"
+#include "ft_unistd.h"
+#include "other.h"
+#include "ft_string.h"
+#include "ft_stdio.h"
+
 char *ft_optarg = NULL;
 int ft_optind = 1;
 int ft_opterr = 1;

@@ -1,5 +1,6 @@
 #include "containers.h"
-#include "../algorithms/algorithms.h"
+#include "includes/algorithms.h"
+#include "ft_strings.h"
 
 status ft_btree_default(type_metadata metadata, void *dst)
 {

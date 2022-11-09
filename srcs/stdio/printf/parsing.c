@@ -1,5 +1,7 @@
 #include "internal_printf.h"
-
+#include "ft_string.h"
+#include "ft_ctype.h"
+#include "ft_stdlib.h"
 int	parse_flag(internal_printf *conv, va_list arg)
 {
 	(void)arg;

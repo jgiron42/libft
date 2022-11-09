@@ -1,4 +1,5 @@
 #include "internal_ft_stdio.h"
+#include "ft_string.h"
 
 int		ft_setvbuf(ft_FILE *restrict stream, char *restrict buf, int type, size_t size)
 {

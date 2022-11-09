@@ -1,43 +1,7 @@
 #include "internal_ft_regex.h"
-
-bool	match_one_char(const ft_regex_t *restrict r, reg_node *node, char *s, size_t end)
-{
-	register bool match = false;
-	switch (node->type)
-	{
-		case REG_DOT:
-			match = !(r->cflags & FT_REG_NEWLINE) || s[end] != '\n'; // TODO: wc
-			break;
-		case REG_CHAR:
-//			printf("    c = %c, s[%zu] = %c\n", node->_char, end, s[end]);
-			match = node->_char == s[end]; // TODO: wc
-			break;
-		case REG_EQUIVALENCE:
-			match = (!strcoll((char[2]) {s[end], 0}, (char[2]) {node->equivalence_class, 0}));
-			break;
-		case REG_CLASS:
-			match = (iswctype(s[end], node->char_class)) != 0;
-			break;
-		case REG_RANGE:
-			match = (s[end] >= node->range.begin && s[end] <= node->range.end);
-			break;
-		case REG_BRACKET:
-		{
-			for (size_t j = 0; j < node->sub.size; j++) {
-				reg_node *tmp = ft_vector_at(&node->sub, j);
-				if (match_one_char(r, tmp, s, end)) {
-					match = true;
-					break;
-				}
-			}
-			break;
-		}
-		default:
-			return 0;
-	}
-	return match;
-}
-
+#include "ft_ctype.h"
+#include "ft_stdio.h"
+#include "ft_string.h"
 int		easy_way(const ft_regex_t *restrict r, char *s, regexec_t *conf, size_t current_begin)
 {
 	FA_state	*current = r->graph->begin;
