@@ -26,8 +26,12 @@ static const graph_builder graph_builder_map[] = {
 		[REG_RANGE] = get_graph_range,
 		[REG_END] = get_graph_end,
 		[REG_BEGIN] = get_graph_begin,
+#if (defined(WHITELIST) && defined(FT_USE_ISWCTYPE))
 		[REG_CLASS] = get_graph_class,
+#endif
+#if (defined(WHITELIST) && defined(FT_USE_STRCOLL))
 		[REG_EQUIVALENCE] = get_graph_equivalence,
+#endif
 
 		[REG_PIPE] = get_graph_pipe,
 		[REG_BRACKET] = get_graph_pipe,

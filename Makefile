@@ -168,7 +168,7 @@ CC		=	clang
 
 CFLAGS  +=	-Wall -Werror -Wextra -g3
 ifdef AUTHORIZED_FUNCTIONS
-CFLAGS	+= -D WHITELIST $(foreach f, ${AUTHORIZED_FUNCTIONS},-D ENABLE_$(shell echo "${f}" | tr 'a-z' 'A-Z'))
+CFLAGS	+= -D WHITELIST $(foreach f, ${AUTHORIZED_FUNCTIONS},-D FT_USE_$(shell echo "${f}" | tr 'a-z' 'A-Z'))
 endif
 
 SRCS_DIR = srcs

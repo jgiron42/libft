@@ -27,4 +27,6 @@ typedef enum {
 // give a pointer to the value (even if the value is temporary)
 # define ref_of(v) ((__typeof__(v)[1]){(v)})
 
+//# define authorized_function(FUNCTION_NAME) (defined(WHITELIST) && defined(FUNCTION_NAME)) || (!defined(WHITELIST) && !defined(FUNCTION_NAME))
+
 #endif //LIBFT_FT_DEF_H
