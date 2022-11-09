@@ -165,14 +165,15 @@ NAME    =	libft.a
 
 CC		=	clang
 
-CFLAGS  +=	-Wall -Werror -Wextra -g3 -D WHITELIST -D ENABLE_STRERROR
+CFLAGS  +=	-Wall -Werror -Wextra -g3
+ifdef AUTHORIZED_FUNCTIONS
+CFLAGS	+= -D WHITELIST $(foreach f, ${AUTHORIZED_FUNCTIONS},-D ENABLE_$(shell echo "${f}" | tr 'a-z' 'A-Z'))
+endif
 
 SRCS_DIR = srcs
 
 OBJS_DIR = .objs
 
 INCLUDE_DIR = .
-
-CFLAGS = -Wall -Werror -Wextra -g3
 
 include lib.mk
