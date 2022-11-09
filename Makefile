@@ -32,6 +32,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		unistd/ft_getopt.c \
 		strings/ft_bzero.c	\
 		stdlib/ft_calloc.c	\
+		stdlib/ft_realloc.c	\
 		ctype/ft_isspace.c	\
 		ctype/ft_isalnum.c	\
 		ctype/ft_isalpha.c	\

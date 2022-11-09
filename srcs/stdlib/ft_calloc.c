@@ -15,6 +15,9 @@
 
 void	*ft_calloc(size_t count, size_t size)
 {
+#if (defined(WHITELIST) && defined(FT_USE_CALLOC))
+	return calloc(count, size);
+#else
 	size_t	i;
 	char	*dst;
 
@@ -36,4 +39,5 @@ void	*ft_calloc(size_t count, size_t size)
 		i++;
 	}
 	return ((void *)dst);
+#endif
 }
