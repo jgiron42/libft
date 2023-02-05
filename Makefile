@@ -139,7 +139,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		stdio/printf/parsing.c \
 		stdio/printf/utils.c \
 		containers/list.c \
-		containers/btree.c \
+		containers/bst.c \
 		containers/vector.c \
 		containers/string.c \
 		containers/buffer.c \

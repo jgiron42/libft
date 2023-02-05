@@ -6,7 +6,7 @@
 
 typedef enum {
 	FT_VECTOR,
-	FT_BTREE,
+	FT_BST,
 	FT_LIST,
 	FT_BHEAP
 }		container_type;
@@ -62,19 +62,19 @@ typedef struct s_type_metadata {
 	size_t size;
 }	type_metadata;
 
-typedef struct s_btree_node {
-	struct s_btree_node *right;
-	struct s_btree_node *left;
-	struct s_btree_node *parent;
+typedef struct s_bst_node {
+	struct s_bst_node *right;
+	struct s_bst_node *left;
+	struct s_bst_node *parent;
 	union {
 		enum {
 			FT_RB_RED,
 			FT_RB_BLACK,
 		}	color;
-		int balance_factor;
+		char balance_factor;
 	};
 	data_type data;
-}			btree_node;
+}			bst_node;
 
 typedef struct s_list_node {
 	data_type data;
@@ -105,11 +105,16 @@ typedef struct s_container {
 			list_node past_the_end;
 		}	list;
 		struct {
-			btree_node *first;
-			btree_node *last;
-			btree_node past_the_end;
-			bool		multi; // true if multiset
-		}	btree;
+			bst_node *first;
+			bst_node *last;
+			bst_node past_the_end;
+			enum {
+				SIMPLE = 0,
+				RED_BLACK,
+				AVL
+			}			type;
+			bool		multi : 1; // true if multiset
+		}	bst;
 	};
 	struct s_iterator	(*begin)(struct s_container *);
 	struct s_iterator	(*end)(struct s_container *);
@@ -140,8 +145,8 @@ typedef struct s_iterator {
 		}	list;
 		struct {
 			type_metadata		key_prop;
-			btree_node	*current;
-		}	btree;
+			bst_node	*current;
+		}	bst;
 	};
 }		iterator;
 
@@ -279,32 +284,32 @@ void		*ft_list_iterator_decrement(void *it);
 
 #define FT_LIST_ITERATOR ((type_metadata){.constructor = &pointer_constructor, .destructor = &pointer_destructor, .copy = &pointer_copy, .assign = &pointer_assign, .compare = &ft_list_iterator_compare, .increment = &ft_list_iterator_increment, .decrement = &ft_list_iterator_decrement, .dereference = &ft_list_iterator_dereference, .size = sizeof( iterator )})
 
-// btree
+// bst
 
-iterator	ft_btree_find(container *this, data_type key);
-//iterator	ft_btree_find_recurse(container *this, btree_node *current, data_type key);
-void		ft_btree_destructor(container *this);
-void		ft_btree_destructor_wrapper(type_metadata meta, void *container);
-void		ft_btree_clear(container *this);
-status		ft_btree_copy(struct s_type_metadata meta, void *dst, const void *src);
-int			ft_btree_compare(type_metadata prop, void *l, void *r);
-iterator	ft_btree_end(container *this);
-iterator	ft_btree_begin(container *this);
-status		ft_btree(type_metadata value, void *dst);
-status		ft_btree_default(type_metadata metadata, void *dst);
-iterator	ft_btree_insert_val(container *this, data_type val);
-iterator	ft_btree_insert_ptr(container *this, data_type *val);
-status		ft_btree_insert_range(container *this, iterator begin, iterator end);
-iterator	ft_btree_erase_one(container *this, iterator it);
+iterator	ft_bst_find(container *this, data_type key);
+//iterator	ft_bst_find_recurse(container *this, bst_node *current, data_type key);
+void		ft_bst_destructor(container *this);
+void		ft_bst_destructor_wrapper(type_metadata meta, void *container);
+void		ft_bst_clear(container *this);
+status		ft_bst_copy(struct s_type_metadata meta, void *dst, const void *src);
+int			ft_bst_compare(type_metadata prop, void *l, void *r);
+iterator	ft_bst_end(container *this);
+iterator	ft_bst_begin(container *this);
+status		ft_bst(type_metadata value, void *dst);
+status		ft_bst_default(type_metadata metadata, void *dst);
+iterator	ft_bst_insert_val(container *this, data_type val);
+iterator	ft_bst_insert_ptr(container *this, data_type *val);
+status		ft_bst_insert_range(container *this, iterator begin, iterator end);
+iterator	ft_bst_erase_one(container *this, iterator it);
 
-int			ft_btree_iterator_compare(type_metadata prop, void *l, void *r);
-data_type	ft_btree_iterator_dereference(void *it);
-data_type	*ft_btree_iterator_reference(void *it);
-void		*ft_btree_iterator_increment(void *it);
-void		*ft_btree_iterator_decrement(void *it);
-data_type	ft_btree_iterator_get_key(void *it);
+int			ft_bst_iterator_compare(type_metadata prop, void *l, void *r);
+data_type	ft_bst_iterator_dereference(void *it);
+data_type	*ft_bst_iterator_reference(void *it);
+void		*ft_bst_iterator_increment(void *it);
+void		*ft_bst_iterator_decrement(void *it);
+data_type	ft_bst_iterator_get_key(void *it);
 
-#define FT_BTREE_ITERATOR ((type_metadata){.constructor = &pointer_constructor, .destructor = &pointer_destructor, .copy = &pointer_copy, .assign = &pointer_assign, .compare = &ft_btree_iterator_compare, .increment = &ft_btree_iterator_increment, .decrement = &ft_btree_iterator_decrement, .dereference = &ft_btree_iterator_dereference, .reference = &ft_btree_iterator_reference, .size = sizeof( iterator )})
+#define FT_BST_ITERATOR ((type_metadata){.constructor = &pointer_constructor, .destructor = &pointer_destructor, .copy = &pointer_copy, .assign = &pointer_assign, .compare = &ft_bst_iterator_compare, .increment = &ft_bst_iterator_increment, .decrement = &ft_bst_iterator_decrement, .dereference = &ft_bst_iterator_dereference, .reference = &ft_bst_iterator_reference, .size = sizeof( iterator )})
 
 status		ft_bheap(type_metadata meta, void *dst);
 data_type	ft_bheap_top(container *this);
@@ -380,22 +385,22 @@ static const type_metadata meta[] = {
 						},
 				},
 		},
-		[FT_BTREE] = {
+		[FT_BST] = {
 				.interface_type = FT_ASSOCIATIVE_CONTAINER,
-				.constructor = &ft_btree_default,
-				.destructor = &ft_btree_destructor_wrapper,
-				.copy = &ft_btree_copy,
-				.compare = &ft_btree_compare,
+				.constructor = &ft_bst_default,
+				.destructor = &ft_bst_destructor_wrapper,
+				.copy = &ft_bst_copy,
+				.compare = &ft_bst_compare,
 				.container = {
-						.begin = &ft_btree_begin,
-						.end = &ft_btree_end,
-						.clear = &ft_btree_clear,
-						.erase_one = &ft_btree_erase_one,
+						.begin = &ft_bst_begin,
+						.end = &ft_bst_end,
+						.clear = &ft_bst_clear,
+						.erase_one = &ft_bst_erase_one,
 						.erase_range = &ft_erase_range,
 						.associative = {
-								.find = &ft_btree_find,
+								.find = &ft_bst_find,
 								.erase = &ft_erase_val,
-								.insert = ft_btree_insert_val,
+								.insert = ft_bst_insert_val,
 						},
 				},
 		},

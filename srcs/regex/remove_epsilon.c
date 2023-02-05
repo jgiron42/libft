@@ -6,7 +6,7 @@ status	remove_epsilon(finite_automaton *raw_graph, FA_state *state)
 	iterator end = state->nd.epsilon->metadata.container.end(state->nd.epsilon);
 #ifdef REG_DEBUG
 	printf("BEGIN epsilon %d\n", state->id);
-	printf("=> %p %p %p %zu\n", &state->nd.epsilon->btree.past_the_end, it.btree.current, end.btree.current, state->nd.epsilon->size);
+	printf("=> %p %p %p %zu\n", &state->nd.epsilon->bst.past_the_end, it.bst.current, end.bst.current, state->nd.epsilon->size);
 #endif
 	while (it.metadata.compare(it.metadata, &it, &end))
 	{
@@ -32,9 +32,9 @@ status	remove_epsilon(finite_automaton *raw_graph, FA_state *state)
 #ifdef REG_DEBUG
 		printf("erasing link %d -> %d\n", state->id, other_state->id);
 #endif
-		it = ft_btree_erase_one(state->nd.epsilon, it);
+		it = ft_bst_erase_one(state->nd.epsilon, it);
 #ifdef REG_DEBUG
-		printf("== %p %p\n", it.btree.current, &state->nd.epsilon->btree.past_the_end);
+		printf("== %p %p\n", it.bst.current, &state->nd.epsilon->bst.past_the_end);
 #endif
 	}
 	state->nd.epsilon->destroy(state->nd.epsilon);
