@@ -9,12 +9,12 @@ status	get_targets(container *current, container *target_subset)
 		FA_state *other_state = it.metadata.dereference(&it);
 		if (!other_state->subset)
 		{
-			iterator tmp = ft_btree_insert_val(target_subset, other_state);
+			iterator tmp = ft_bst_insert_val(target_subset, other_state);
 			if (!tmp.metadata.compare(tmp.metadata, &tmp,
 									  ref_of(target_subset->metadata.container.end(target_subset))))
 				return FATAL;
 		}
-		else if (ft_btree_insert_range(target_subset, other_state->subset->begin(other_state->subset), other_state->subset->end(other_state->subset)) != OK)
+		else if (ft_bst_insert_range(target_subset, other_state->subset->begin(other_state->subset), other_state->subset->end(other_state->subset)) != OK)
 			return FATAL;
 	}
 	return OK;
@@ -35,7 +35,7 @@ status	get_all_transitions(FA_state *target)
 			for_in(it2, *sub_state->nd.ascii[i]) {
 
 				// do not insert link between states in the subset
-//				iterator it3 = ft_btree_find(target->subset, it2.metadata.dereference(&it2));
+//				iterator it3 = ft_bst_find(target->subset, it2.metadata.dereference(&it2));
 //				if (it3.metadata.compare(it3.metadata, &it3, ref_of(target->subset->metadata.container.end(target->subset))))
 //					continue;
 
@@ -56,7 +56,7 @@ FA_state *find_or_create_target(finite_automaton *automaton, container *target_s
 	}
 
 	FA_state tmp = {.id = -1, .subset = target_subset};
-	iterator found_it = ft_btree_find(subset_map, &tmp);
+	iterator found_it = ft_bst_find(subset_map, &tmp);
 	if (found_it.metadata.compare(found_it.metadata, &found_it, ref_of(subset_map->metadata.container.end(subset_map))))
 		return found_it.metadata.dereference(&found_it);
 	else
@@ -71,13 +71,13 @@ FA_state *find_or_create_target(finite_automaton *automaton, container *target_s
 			free(target);
 			return NULL;
 		}
-		if (ft_btree_copy(target_subset->metadata, target->subset, target_subset) != OK)
+		if (ft_bst_copy(target_subset->metadata, target->subset, target_subset) != OK)
 		{
 			free(target->subset);
 			free(target);
 			return NULL;
 		}
-		iterator it = ft_btree_insert_val(subset_map, target);
+		iterator it = ft_bst_insert_val(subset_map, target);
 		if (!it.metadata.compare(it.metadata, &it, ref_of(subset_map->end(subset_map))))
 		{
 			free(target->subset);
@@ -106,8 +106,8 @@ status	powerset_construction(finite_automaton *automaton)
 
 	type_metadata state_meta = ATOMIC_TYPE;
 	state_meta.compare = &state_compare;
-	if (ft_btree(state_meta, &subset_map) != OK ||
-		ft_btree(ATOMIC_TYPE, &target_subset) != OK )
+	if (ft_bst(state_meta, &subset_map) != OK ||
+		ft_bst(ATOMIC_TYPE, &target_subset) != OK )
 		return FATAL;
 	for_val_in(FA_state *state, automaton->states)
 	{

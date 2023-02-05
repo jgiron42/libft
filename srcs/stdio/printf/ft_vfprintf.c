@@ -36,6 +36,9 @@ int		handle_conversion(ft_FILE *restrict stream, const char *restrict* format, v
 		case '%':
 			handle_percent(&conv, arg);
 			break;
+			/*
+			 * e E f F g G a A
+			 */
 	}
 	return 1;
 }

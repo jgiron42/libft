@@ -11,11 +11,11 @@ status	create_link(container **src, FA_state *dst)
 	if (!*src)
 	{
 		*src = ft_calloc(1, sizeof(container));
-		if (!*src || ft_btree(ATOMIC_TYPE, *src) != OK)
+		if (!*src || ft_bst(ATOMIC_TYPE, *src) != OK)
 			return FATAL;
 	}
-	iterator it = ft_btree_insert_val(*src, dst);
-	if (!it.metadata.compare(it.metadata, &it, ref_of(ft_btree_end(*src))))
+	iterator it = ft_bst_insert_val(*src, dst);
+	if (!it.metadata.compare(it.metadata, &it, ref_of(ft_bst_end(*src))))
 	{
 		free(*src);
 		return FATAL;

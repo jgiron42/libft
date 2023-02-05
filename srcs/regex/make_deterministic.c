@@ -21,7 +21,7 @@ status	make_deterministic(finite_automaton *automaton)
 				cursed_abort("the automaton isn't deterministic");
 			FA_state *ptr = NULL;
 			if (state->nd.ascii[i]->size)
-				ptr = ft_btree_iterator_dereference(ref_of(state->nd.ascii[i]->begin(state->nd.ascii[i])));
+				ptr = ft_bst_iterator_dereference(ref_of(state->nd.ascii[i]->begin(state->nd.ascii[i])));
 #ifdef REG_DEBUG
 			printf("size: %zu ptr: %p %zu id: %d accept: %d\n", state->nd.ascii[i]->size, ptr, malloc_usable_size(ptr), ptr->id, ptr->accept);
 #endif
