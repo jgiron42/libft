@@ -68,6 +68,8 @@ typedef struct {
 	size_t						begin;
 }	internal_printf;
 
+extern int saved_errno;
+
 typedef int (*f)(internal_printf *);
 
 int	handle_percent(internal_printf *conv, va_list arg);

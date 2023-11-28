@@ -43,10 +43,15 @@ int		handle_conversion(ft_FILE *restrict stream, const char *restrict* format, v
 	return 1;
 }
 
+int saved_errno;
+
 int      ft_vfprintf(ft_FILE *restrict stream, const char *restrict format, va_list arg)
 {
 	ft_fpos_t tmp;
 	size_t			pos;
+
+	saved_errno = errno;
+
 	if (ft_fgetpos(stream, &tmp) == -1)
 		return -1;
 	pos = tmp.pos;
