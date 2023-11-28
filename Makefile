@@ -67,8 +67,8 @@ SRCS    =	stdlib/ft_atoi.c \
 		other/ft_strmapi.c	\
 		string/ft_strncmp.c	\
 		other/ft_strnstr.c	\
-		strings/ft_strncasecmp.c	\
 		strings/ft_strcasecmp.c	\
+		strings/ft_strncasecmp.c	\
 		string/ft_strrchr.c	\
 		other/ft_strtrim.c	\
 		other/cursed_abort.c	\
@@ -161,7 +161,8 @@ SRCS    =	stdlib/ft_atoi.c \
 		libgen/ft_basename.c \
 		libgen/ft_dirname.c \
 		containers/generic_interface.c \
-		algorithms/compare.c
+		algorithms/compare.c \
+		binary/binary.c
 
 NAME    =	libft.a
 
