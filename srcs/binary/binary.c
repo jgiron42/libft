@@ -1,8 +1,10 @@
 #include "binary.h"
+#include "other.h"
 
 mapped_file	map_file(char *filename)
 {
 	int fd;
+	(void)filename;
 #if (defined(WHITELIST) && defined(FT_USE_OPEN)) || (!defined(WHITELIST) && !defined(FT_USE_OPEN))
 	fd = open(filename, O_RDONLY);
 #else
@@ -10,11 +12,12 @@ mapped_file	map_file(char *filename)
 #endif
 	if (fd == -1)
 		return (mapped_file){NULL, 0, -1};
-	struct stat st = {};
 #if (defined(WHITELIST) && defined(FT_USE_STRERROR)) || (!defined(WHITELIST) && !defined(FT_USE_STRERROR))
+	struct stat st = {};
 	if (fstat(fd, &st) == -1)
 		return (mapped_file){NULL, 0, -1};
 #elif (defined(WHITELIST) && defined(FT_USE_SYSCALL)) || (!defined(WHITELIST) && !defined(FT_USE_SYSCALL))
+	struct stat st = {};
 	if (syscall(SYS_fstat, fd, &st) == -1)
 		return (mapped_file){NULL, 0, -1};
 #else
@@ -29,6 +32,7 @@ mapped_file	map_file(char *filename)
 
 void unmap_file(mapped_file f)
 {
+	(void)f;
 #if (defined(WHITELIST) && defined(FT_USE_MUNMAP)) || (!defined(WHITELIST) && !defined(FT_USE_MUNMAP))
 	munmap(f.address, f.size);
 #else
