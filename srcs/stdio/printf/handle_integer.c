@@ -129,52 +129,30 @@ int	handle_integer(internal_printf *conv, va_list arg)
 
 	size += padding;
 
-	char *final_buf = malloc(size + 1);
-	char *tmp = final_buf;
-	if (!final_buf)
-		return (-1);
 	while (padding && !(conv->flags & FT_PRINTF_HYPHEN))
 	{
-		*tmp = conv->flags & FT_PRINTF_ZERO ? '0' : ' ';
-		tmp++;
+		ft_fputc(conv->flags & FT_PRINTF_ZERO ? '0' : ' ', conv->stream);
 		padding--;
 	}
 	if (is_neg)
-	{
-		*tmp = '-';
-		tmp++;
-	}
+		ft_fputc('-', conv->stream);
 	else if (is_signed && (conv->flags & FT_PRINTF_SPACE || conv->flags & FT_PRINTF_PLUS))
-	{
-		*tmp = conv->flags & FT_PRINTF_SPACE ? ' ' : '+';
-		tmp++;
-	}
+		ft_fputc(conv->flags & FT_PRINTF_SPACE ? ' ' : '+', conv->stream);
 	if (((conv->conversion == 'x' || conv->conversion == 'X') && conv->flags & FT_PRINTF_SHARP) || conv->conversion == 'p')
 	{
-		*tmp = '0';
-		tmp[1] = conv->conversion == 'X' ? 'X' : 'x';
-		tmp += 2;
+		ft_fputc('0', conv->stream);
+		ft_fputc(conv->conversion == 'X' ? 'X' : 'x', conv->stream);
 	}
 	while (precision > 0)
 	{
-		*tmp = '0';
-		tmp++;
+		ft_fputc('0', conv->stream);
 		precision--;
 	}
-	while (*ptr)
-	{
-		*tmp = *ptr;
-		tmp++;
-		ptr++;
-	}
+	ft_fputs(ptr, conv->stream);
 	while (padding && conv->flags & FT_PRINTF_HYPHEN)
 	{
-		*tmp = ' ';
-		tmp++;
+		ft_fputc(' ', conv->stream);
 		padding--;
 	}
-	*tmp = 0;
-	int ret = ft_fwrite(final_buf, 1, size, conv->stream) ? 1 : -1;
-	free(final_buf);
-	return (ret);
+	return (ft_ferror(conv->stream) ? -1 : 1);
 }
