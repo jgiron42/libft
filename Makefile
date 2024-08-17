@@ -138,6 +138,7 @@ SRCS    =	stdlib/ft_atoi.c \
 		stdio/printf/handle_n.c \
 		stdio/printf/parsing.c \
 		stdio/printf/utils.c \
+		containers/constants.c \
 		containers/list.c \
 		containers/bst.c \
 		containers/vector.c \
